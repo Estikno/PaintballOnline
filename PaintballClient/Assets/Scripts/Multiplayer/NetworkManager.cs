@@ -3,6 +3,11 @@ using Riptide.Utils;
 using System;
 using UnityEngine;
 
+public enum ServerToClientId : ushort
+{
+    playerSpawned = 1,
+}
+
 public enum ClientToServerId : ushort
 {
     name = 1,
@@ -35,20 +40,19 @@ public class NetworkManager : MonoBehaviour
 
     private void Awake()
     {
-        instance = this;
+        Instance = this;
     }
 
     private void Start()
     {
         Application.targetFrameRate = 120;
 
-#if UNITY_EDITOR
         RiptideLogger.Initialize(Debug.Log, Debug.Log, Debug.LogWarning, Debug.LogError, false);
-# endif
 
         Client = new Client();
         Client.Connected += DidConnect;
         Client.ConnectionFailed += FailedToConnect;
+        Client.ClientDisconnected += PlayerLeft;
         Client.Disconnected += DidDisconnect;
     }
 
@@ -75,6 +79,11 @@ public class NetworkManager : MonoBehaviour
     private void FailedToConnect(object sender, EventArgs e)
     {
         ConnectUIManager.Instance.BackToMain();
+    }
+
+    private void PlayerLeft(object sender, ClientDisconnectedEventArgs e)
+    {
+        Destroy(Player.list[e.Id].transform.parent.gameObject);
     }
 
     private void DidDisconnect(object sender, EventArgs e)

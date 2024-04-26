@@ -2,6 +2,11 @@ using UnityEngine;
 using Riptide.Utils;
 using Riptide;
 
+public enum ServerToClientId : ushort
+{
+    playerSpawned = 1,
+}
+
 public enum ClientToServerId : ushort
 {
     name = 1,
@@ -34,19 +39,25 @@ public class NetworkManager : MonoBehaviour
 
     private void Awake()
     {
-        instance = this;
+        Instance = this;
     }
 
     private void Start()
     {
-        Application.targetFrameRate = 120;
+        Application.targetFrameRate = 60;
 
-# if UNITY_EDITOR
+#if UNITY_EDITOR
         RiptideLogger.Initialize(Debug.Log, Debug.Log, Debug.LogWarning, Debug.LogError, false);
-# endif
+#else
+        System.Console.Title = "Server";
+        System.Console.Clear();
+        Application.SetStackTraceLogType(UnityEngine.LogType.Log, StackTraceLogType.None);
+        RiptideLogger.Initialize(Debug.Log, true);
+#endif
 
         Server = new Server();
         Server.Start(port, maxClientCount);
+        Server.ClientDisconnected += PlayerLeft;
     }
 
     private void FixedUpdate()
@@ -57,5 +68,11 @@ public class NetworkManager : MonoBehaviour
     private void OnApplicationQuit()
     {
         Server.Stop();
+    }
+
+    private void PlayerLeft(object sender, ServerDisconnectedEventArgs e)
+    {
+        if (Player.list.TryGetValue(e.Client.Id, out Player player))
+            Destroy(player.transform.parent.gameObject);
     }
 }

@@ -186,16 +186,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: NetworkManager
       objectReference: {fileID: 0}
-    - target: {fileID: 7264597137430448427, guid: b86c0037602c87540af2798ae185eda4,
-        type: 3}
-      propertyPath: port
-      value: 7777
-      objectReference: {fileID: 0}
-    - target: {fileID: 7264597137430448427, guid: b86c0037602c87540af2798ae185eda4,
-        type: 3}
-      propertyPath: maxClientCount
-      value: 10
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

@@ -31,7 +31,7 @@ public class ConnectUIManager : MonoBehaviour
 
     private void Awake()
     {
-        instance = this;
+        Instance = this;
     }
 
     public void ConnectClicked()
