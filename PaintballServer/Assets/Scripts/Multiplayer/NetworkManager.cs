@@ -5,11 +5,13 @@ using Riptide;
 public enum ServerToClientId : ushort
 {
     playerSpawned = 1,
+    playerMovement
 }
 
 public enum ClientToServerId : ushort
 {
     name = 1,
+    input
 }
 
 public class NetworkManager : MonoBehaviour

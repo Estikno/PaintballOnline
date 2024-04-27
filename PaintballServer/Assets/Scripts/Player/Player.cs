@@ -3,12 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using Riptide;
 
+[RequireComponent(typeof(PlayerMovement))]
 public class Player : MonoBehaviour
 {
     public static Dictionary<ushort, Player> list = new Dictionary<ushort, Player>();
 
     public ushort Id { get; private set; }
     public string Username { get; private set; }
+    public PlayerMovement PlayerMovement => Movement;
+
+    [SerializeField] private PlayerMovement Movement;
 
     private void OnDestroy()
     {
@@ -54,6 +58,13 @@ public class Player : MonoBehaviour
     private static void Name(ushort fromClientId, Message message)
     {
         Spawn(fromClientId, message.GetString());
+    }
+
+    [MessageHandler((ushort)ClientToServerId.input)]
+    private static void Input(ushort fromClientId, Message message)
+    {
+        if(list.TryGetValue(fromClientId, out Player player))
+            player.Movement.SetInput(message.GetBools(6), message.GetVector3());
     }
 
     #endregion
