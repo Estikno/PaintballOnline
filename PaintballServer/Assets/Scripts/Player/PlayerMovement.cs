@@ -231,12 +231,15 @@ public class PlayerMovement : MonoBehaviour
         this.inputs = inputs;
         orientation.forward = FlattenVector3(forward);
         camHolder.forward = forward;
+
+        Debug.DrawRay(camHolder.position, camHolder.forward * 2, Color.red);
     }
 
     private void SendMovement()
     {
         Message message = Message.Create(MessageSendMode.Unreliable, ServerToClientId.playerMovement);
         message.AddUShort(player.Id);
+        message.AddUShort(NetworkManager.Instance.CurrentTick);
         message.AddVector3(transform.position);
         message.AddVector3(camHolder.forward);
 

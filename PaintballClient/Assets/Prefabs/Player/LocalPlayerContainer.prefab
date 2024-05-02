@@ -253,8 +253,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcc68d4792a21ae4587816ad8fbe8187, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sensX: 100
-  sensY: 100
+  sensX: 400
+  sensY: 400
   camHolder: {fileID: 8894735316007190685}
 --- !u!4 &8894735316007190685 stripped
 Transform:

@@ -4,7 +4,8 @@ using Riptide;
 
 public enum ServerToClientId : ushort
 {
-    playerSpawned = 1,
+    sync = 1,
+    playerSpawned,
     playerMovement
 }
 
@@ -36,6 +37,9 @@ public class NetworkManager : MonoBehaviour
 
     public Server Server {  get; private set; }
 
+    //Every 27.3 minutes the currentTick needs to be reseted
+    public ushort CurrentTick { get; private set; } = 0;
+
     [SerializeField] private ushort port;
     [SerializeField] private ushort maxClientCount;
 
@@ -65,6 +69,11 @@ public class NetworkManager : MonoBehaviour
     private void FixedUpdate()
     {
         Server.Update();
+
+        if (CurrentTick % 200 == 0)
+            SendSync();
+
+        CurrentTick++;
     }
 
     private void OnApplicationQuit()
@@ -76,5 +85,13 @@ public class NetworkManager : MonoBehaviour
     {
         if (Player.list.TryGetValue(e.Client.Id, out Player player))
             Destroy(player.transform.parent.gameObject);
+    }
+
+    private void SendSync()
+    {
+        Message message = Message.Create(MessageSendMode.Unreliable, ServerToClientId.sync);
+        message.AddUShort(CurrentTick);
+
+        Server.SendToAll(message);
     }
 }

@@ -11,6 +11,7 @@ public class Player : MonoBehaviour
     public bool IsLocal { get; private set; }
 
     [SerializeField] private Transform camHolder;
+    [SerializeField] private Interpolator interpolator;
 
     private string username;
 
@@ -19,9 +20,11 @@ public class Player : MonoBehaviour
         list.Remove(Id);
     }
 
-    private void Move(Vector3 newPosition, Vector3 forward)
+    private void Move(ushort tick, Vector3 newPosition, Vector3 forward)
     {
-        transform.position = newPosition;
+        //transform.position = newPosition;
+
+        interpolator.NewUpdate(tick, newPosition);
 
         if(!IsLocal)
             camHolder.forward = forward;
@@ -61,7 +64,7 @@ public class Player : MonoBehaviour
     private static void PlayerMovement(Message message)
     {
         if (list.TryGetValue(message.GetUShort(), out Player player))
-            player.Move(message.GetVector3(), message.GetVector3());
+            player.Move(message.GetUShort(), message.GetVector3(), message.GetVector3());
     }
 
     #endregion
