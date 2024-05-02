@@ -91,15 +91,17 @@ public class PlayerMovement : MonoBehaviour
     {
         if (inputs[0])
             verticalInput = 1f;
-
-        if (inputs[1])
+        else if (inputs[1])
             verticalInput = -1f;
+        else
+            verticalInput = 0f;
 
         if (inputs[2])
             horizontalInput = -1f;
-
-        if (inputs[3])
-            horizontalInput = 1f;
+        else if (inputs[3])
+            horizontalInput = 1f;   
+        else
+            horizontalInput = 0f;
 
         //when to jump
         if (inputs[4] && isGrounded)
