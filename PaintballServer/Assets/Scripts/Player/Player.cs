@@ -10,9 +10,11 @@ public class Player : MonoBehaviour
 
     public ushort Id { get; private set; }
     public string Username { get; private set; }
-    public PlayerMovement PlayerMovement => Movement;
+    public PlayerMovement PlayerMovement => playerMovement;
+    public Gun PlayerGun => playerGun;
 
-    [SerializeField] private PlayerMovement Movement;
+    [SerializeField] private PlayerMovement playerMovement;
+    [SerializeField] private Gun playerGun;
 
     private void OnDestroy()
     {
@@ -64,7 +66,21 @@ public class Player : MonoBehaviour
     private static void Input(ushort fromClientId, Message message)
     {
         if(list.TryGetValue(fromClientId, out Player player))
-            player.Movement.SetInput(message.GetBools(6), message.GetVector3());
+            player.PlayerMovement.SetInput(message.GetBools(6), message.GetVector3());
+    }
+
+    [MessageHandler((ushort)ClientToServerId.primariClick)]
+    private static void PrimariClick(ushort fromClientId, Message message)
+    {
+        if (list.TryGetValue(fromClientId, out Player player))
+            player.PlayerGun.Shoot();
+    }
+
+    [MessageHandler((ushort)ClientToServerId.reloadClick)]
+    private static void ReloadClick(ushort fromClientId, Message message)
+    {
+        if (list.TryGetValue(fromClientId, out Player player))
+            player.PlayerGun.StartReload();
     }
 
     #endregion
