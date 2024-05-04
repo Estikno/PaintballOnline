@@ -7,13 +7,17 @@ public enum ServerToClientId : ushort
 {
     sync = 1,
     playerSpawned,
-    playerMovement
+    playerMovement,
+    playerShoot,
+    playerReload,
 }
 
 public enum ClientToServerId : ushort
 {
     name = 1,
-    input
+    input,
+    primariClick,
+    reloadClick
 }
 
 public class NetworkManager : MonoBehaviour

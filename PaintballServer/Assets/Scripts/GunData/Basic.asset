@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6990ffa5d8b385a4faea071dca15733a, type: 3}
   m_Name: Basic
   m_EditorClassIdentifier: 
-  name: 
-  damage: 0
-  maxDistance: 0
-  currentAmmo: 0
-  magSize: 0
-  fireRate: 0
-  reloadTime: 0
+  name: Basic
+  damage: 22
+  maxDistance: 200
+  currentAmmo: 30
+  magSize: 30
+  fireRate: 600
+  reloadTime: 1
   reloading: 0
