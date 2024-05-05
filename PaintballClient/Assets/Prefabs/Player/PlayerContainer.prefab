@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5049471214820273739}
+  - component: {fileID: 4945354188223579893}
   m_Layer: 0
   m_Name: WeaponHolder
   m_TagString: Untagged
@@ -28,10 +29,21 @@ Transform:
   m_LocalPosition: {x: 0.69, y: -0.25, z: 0.69}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 4364078064288519149}
+  m_Children: []
   m_Father: {fileID: 5448935015385697247}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4945354188223579893
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1686542943508622320}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d5ce22c1f5557a4c9777a45eb3bb28e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3530347033828698570
 GameObject:
   m_ObjectHideFlags: 0
@@ -160,6 +172,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   camHolder: {fileID: 5448935015385697247}
   interpolator: {fileID: 3756995880417542920}
+  weaponManager: {fileID: 4945354188223579893}
 --- !u!114 &3756995880417542920
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -172,6 +185,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6130e39ca1770c48bd26469ac952a5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsRotationNeeded: 0
   timeElapsed: 0
   timeToReachTarget: 0.05
   movementThreshold: 0.05
@@ -289,77 +303,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!1001 &408876128768117463
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 5049471214820273739}
-    m_Modifications:
-    - target: {fileID: 4124399286599391546, guid: ddde46a2ebe9dae43a5670a2e0c015a3,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4124399286599391546, guid: ddde46a2ebe9dae43a5670a2e0c015a3,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4124399286599391546, guid: ddde46a2ebe9dae43a5670a2e0c015a3,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4124399286599391546, guid: ddde46a2ebe9dae43a5670a2e0c015a3,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4124399286599391546, guid: ddde46a2ebe9dae43a5670a2e0c015a3,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4124399286599391546, guid: ddde46a2ebe9dae43a5670a2e0c015a3,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4124399286599391546, guid: ddde46a2ebe9dae43a5670a2e0c015a3,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4124399286599391546, guid: ddde46a2ebe9dae43a5670a2e0c015a3,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4124399286599391546, guid: ddde46a2ebe9dae43a5670a2e0c015a3,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4124399286599391546, guid: ddde46a2ebe9dae43a5670a2e0c015a3,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4573064340581062179, guid: ddde46a2ebe9dae43a5670a2e0c015a3,
-        type: 3}
-      propertyPath: m_Name
-      value: PaintballGun
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: ddde46a2ebe9dae43a5670a2e0c015a3, type: 3}
---- !u!4 &4364078064288519149 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4124399286599391546, guid: ddde46a2ebe9dae43a5670a2e0c015a3,
-    type: 3}
-  m_PrefabInstance: {fileID: 408876128768117463}
-  m_PrefabAsset: {fileID: 0}

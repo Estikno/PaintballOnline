@@ -6,89 +6,103 @@ using UnityEngine;
 
 public class Gun : Weapon
 {
-    [Header("References")]
-    [SerializeField] protected GunData gunData;
+    //Variables needed for shooting
+    private bool reloading;
+    private int currentAmmo;
 
     protected override void Awake()
     {
         base.Awake();
 
-        list.Add(Id, this);
-
         //always make sure reloading is false at start so avoid bugs
-        gunData.reloading = false;
+        reloading = false;
+
+        //reload all ammo at start
+        currentAmmo = GunData.MagSize;
     }
 
-    public void StartReload() //the function that checks and excecutes the reload
+    public override void Reload()
     {
+        base.Reload();
+
         //excecute if is no realoading, if is held, selected and the ammo is smaller than the mag size
-        if (!gunData.reloading && gunData.currentAmmo != gunData.magSize)
+        if (!reloading && currentAmmo != GunData.MagSize)
         {
             //start the reloading corroutine
-            StartCoroutine(Reload());
+            StartCoroutine(_Reload());
         }
     }
 
     //actual reloading function
-    private IEnumerator Reload()
+    private IEnumerator _Reload()
     {
-        //set variables and anim
-        gunData.reloading = true;
-
-        //send reload message
+        //Send reload message
         SendReload(false);
 
-        //wait for the reload time
-        yield return new WaitForSeconds(gunData.reloadTime);
+        //set variables and anim
+        reloading = true;
 
-        //set the ammo to the mag size
-        gunData.currentAmmo = gunData.magSize;
+        //wait for the reload time
+        yield return new WaitForSeconds(GunData.ReloadTime);
 
         //set the reloading to false
-        gunData.reloading = false;
+        reloading = false;
 
-        //send reload message
+        //Exit if the weapon is not selected nor held
+        if (!Held || !Selected) yield break;
+
+        //Send reload message
         SendReload(true);
+
+        //set the ammo to the mag size
+        currentAmmo = GunData.MagSize;
     }
 
+
     //this method verifies if we can shoot
-    protected bool canShoot() => !gunData.reloading && timeSinceLastShoot > 1f / (gunData.fireRate / 60f) && gunData.currentAmmo > 0;
+    private bool canShoot() => !reloading && Held && Selected && timeSinceLastShoot > 1f / (GunData.FireRate / 60f) && currentAmmo > 0;
 
     public override void Shoot()
     {
         if (canShoot())
         {
             //traces a raycast to see with what collides the shot
-            if (Physics.Raycast(camHolder.position, camHolder.forward, out RaycastHit hitInfo, gunData.maxDistance))
+            if (Physics.Raycast(cam.position, cam.forward, out RaycastHit hitInfo, GunData.MaxDistance))
             {
                 //get the object script and apply the damage
                 //IDamageable damageable = hitInfo.transform.GetComponent<IDamageable>();
-                //damageable?.TakeDamage(gunData.damage);
-                Debug.Log("shoot!!!");
+                //damageable?.TakeDamage(GunData.Damage);
             }
 
             //update variables
-            gunData.currentAmmo--;
+            currentAmmo--;
             timeSinceLastShoot = 0;
+
+            //Send the message
+            SendShoot();
         }
     }
 
     #region Messages
 
-    private void SendReload(bool hasReloaded)
+    //Sends a shoot message
+    private void SendShoot()
     {
-        Message message = Message.Create(MessageSendMode.Reliable, ServerToClientId.playerReload);
-        message.AddUShort(player.Id);
-        message.AddBool(hasReloaded);
-        message.AddFloat(gunData.reloadTime);
+        Message message = Message.Create(MessageSendMode.Reliable, ServerToClientId.weaponShoot);
+        message.AddUShort(WeaponId);
+        message.AddUShort(Manager.player.Id);
 
         NetworkManager.Instance.Server.SendToAll(message);
     }
 
-    private void SendShoot()
+    //Sends the reload messages
+    private void SendReload(bool isFinished)
     {
-        Message message = Message.Create(MessageSendMode.Reliable, ServerToClientId.playerShoot);
-        message.AddUShort(player.Id);
+        Message message = Message.Create(MessageSendMode.Reliable, ServerToClientId.reloadWeapon);
+        message.AddUShort(WeaponId);
+        message.AddUShort(Manager.player.Id);
+        message.AddBool(isFinished);
+        message.AddFloat(GunData.ReloadTime);
 
         NetworkManager.Instance.Server.SendToAll(message);
     }

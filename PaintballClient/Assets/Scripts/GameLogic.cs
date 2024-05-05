@@ -1,6 +1,14 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+[Serializable]
+public struct NameWeapon
+{
+    public string Name;
+    public GameObject prefab;
+}
 
 public class GameLogic : MonoBehaviour
 {
@@ -24,10 +32,12 @@ public class GameLogic : MonoBehaviour
 
     public GameObject PlayerPrefab => playerPrefab;
     public GameObject LocalPlayerPrefab => localPlayerPrefab;
+    public NameWeapon[] Weapons => weapons;
 
     [Header("Prefabs")]
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private GameObject localPlayerPrefab;
+    [SerializeField] private NameWeapon[] weapons;
 
     private void Awake()
     {

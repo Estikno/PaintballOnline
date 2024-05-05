@@ -2,21 +2,35 @@ using UnityEngine;
 using Riptide.Utils;
 using Riptide;
 
+/// <summary>
+/// The id's of the messages send from the server to the client
+/// </summary>
 public enum ServerToClientId : ushort
 {
     sync = 1,
     playerSpawned,
     playerMovement,
-    playerShoot,
-    playerReload,
+    selectedWeapon,
+    addWeapon,
+    pickUpWeapon,
+    dropWeapon,
+    weaponMovement,
+    weaponShoot,
+    reloadWeapon
 }
 
+/// <summary>
+/// The id's of the messages send from the client to the server
+/// </summary>
 public enum ClientToServerId : ushort
 {
     name = 1,
     input,
-    primariClick,
-    reloadClick
+    primaryUse,
+    switchWeapon,
+    pickUpWeapon,
+    dropWeapon,
+    reloadWeapon
 }
 
 public class NetworkManager : MonoBehaviour

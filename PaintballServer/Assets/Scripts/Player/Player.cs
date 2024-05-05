@@ -11,10 +11,10 @@ public class Player : MonoBehaviour
     public ushort Id { get; private set; }
     public string Username { get; private set; }
     public PlayerMovement PlayerMovement => playerMovement;
-    public Gun PlayerGun => playerGun;
+    public WeaponManager WeaponManager => weaponManager;
 
     [SerializeField] private PlayerMovement playerMovement;
-    [SerializeField] private Gun playerGun;
+    [SerializeField] private WeaponManager weaponManager;
 
     private void OnDestroy()
     {
@@ -69,18 +69,18 @@ public class Player : MonoBehaviour
             player.PlayerMovement.SetInput(message.GetBools(6), message.GetVector3());
     }
 
-    [MessageHandler((ushort)ClientToServerId.primariClick)]
-    private static void PrimariClick(ushort fromClientId, Message message)
+    [MessageHandler((ushort)ClientToServerId.primaryUse)]
+    private static void PrimaryUse(ushort fromClient, Message message)
     {
-        if (list.TryGetValue(fromClientId, out Player player))
-            player.PlayerGun.Shoot();
+        if (list.TryGetValue(fromClient, out Player player))
+            player.weaponManager.PrimaryUsePressed();
     }
 
-    [MessageHandler((ushort)ClientToServerId.reloadClick)]
-    private static void ReloadClick(ushort fromClientId, Message message)
+    [MessageHandler((ushort)ClientToServerId.reloadWeapon)]
+    private static void RealoadWeapon(ushort fromClient, Message message)
     {
-        if (list.TryGetValue(fromClientId, out Player player))
-            player.PlayerGun.StartReload();
+        if (list.TryGetValue(fromClient, out Player player))
+            player.weaponManager.ReloadWeapon();
     }
 
     #endregion

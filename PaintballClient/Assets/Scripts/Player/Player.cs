@@ -10,8 +10,11 @@ public class Player : MonoBehaviour
     public ushort Id { get; private set; }
     public bool IsLocal { get; private set; }
 
+    public WeaponManager WeaponManager => weaponManager;
+
     [SerializeField] private Transform camHolder;
     [SerializeField] private Interpolator interpolator;
+    [SerializeField] private WeaponManager weaponManager;
 
     private string username;
 
