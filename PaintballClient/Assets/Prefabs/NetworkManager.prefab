@@ -47,6 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ip: 127.0.0.1
   port: 7777
+  tickDivergeTolerance: 1
 --- !u!114 &6669711757259996237
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -63,3 +64,7 @@ MonoBehaviour:
     type: 3}
   localPlayerPrefab: {fileID: 8598174961398311416, guid: ddb5613c3efe7774a98202b5b89f5609,
     type: 3}
+  weapons:
+  - Name: Basic
+    prefab: {fileID: 4573064340581062179, guid: ddde46a2ebe9dae43a5670a2e0c015a3,
+      type: 3}
