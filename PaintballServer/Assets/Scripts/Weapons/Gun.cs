@@ -10,6 +10,10 @@ public class Gun : Weapon
     private bool reloading;
     private int currentAmmo;
 
+    [Header("Other")]
+    [SerializeField] private Transform gunPoint;
+    [SerializeField] private LayerMask whatToHit;
+
     protected override void Awake()
     {
         base.Awake();
@@ -66,12 +70,22 @@ public class Gun : Weapon
     {
         if (canShoot())
         {
+            //instantiate a bullet
+            Bullet bullet = Instantiate(GameLogic.Instance.Bullet, gunPoint.position, Quaternion.identity).GetComponent<Bullet>();
+            Vector3 dir;
+
             //traces a raycast to see with what collides the shot
-            if (Physics.Raycast(cam.position, cam.forward, out RaycastHit hitInfo, GunData.MaxDistance))
+            if (Physics.Raycast(cam.position, cam.forward, out RaycastHit hitInfo, GunData.MaxDistance, whatToHit))
             {
-                //get the object script and apply the damage
-                //IDamageable damageable = hitInfo.transform.GetComponent<IDamageable>();
-                //damageable?.TakeDamage(GunData.Damage);
+                dir = Vector3.Normalize(hitInfo.point - gunPoint.position);
+                print(dir);
+                bullet.Initiate(GunData.MaxDistance, GunData.Damage, GunData.Name, dir);
+            }
+            else
+            {
+                dir = (cam.forward * GunData.MaxDistance) - gunPoint.position;
+                print(dir);
+                bullet.Initiate(GunData.MaxDistance, GunData.Damage, GunData.Name, dir);
             }
 
             //update variables
@@ -79,18 +93,20 @@ public class Gun : Weapon
             timeSinceLastShoot = 0;
 
             //Send the message
-            SendShoot();
+            SendShoot(dir);
         }
     }
 
     #region Messages
 
     //Sends a shoot message
-    private void SendShoot()
+    private void SendShoot(Vector3 dir)
     {
         Message message = Message.Create(MessageSendMode.Reliable, ServerToClientId.weaponShoot);
         message.AddUShort(WeaponId);
         message.AddUShort(Manager.player.Id);
+        message.AddVector3(dir);
+        message.AddVector3(gunPoint.position);
 
         NetworkManager.Instance.Server.SendToAll(message);
     }

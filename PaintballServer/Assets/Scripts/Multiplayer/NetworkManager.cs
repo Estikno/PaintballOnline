@@ -16,7 +16,8 @@ public enum ServerToClientId : ushort
     dropWeapon,
     weaponMovement,
     weaponShoot,
-    reloadWeapon
+    reloadWeapon,
+    destroyBullet,
 }
 
 /// <summary>
