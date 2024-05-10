@@ -78,13 +78,11 @@ public class Gun : Weapon
             if (Physics.Raycast(cam.position, cam.forward, out RaycastHit hitInfo, GunData.MaxDistance, whatToHit))
             {
                 dir = Vector3.Normalize(hitInfo.point - gunPoint.position);
-                print(dir);
                 bullet.Initiate(GunData.MaxDistance, GunData.Damage, GunData.Name, dir);
             }
             else
             {
                 dir = (cam.forward * GunData.MaxDistance) - gunPoint.position;
-                print(dir);
                 bullet.Initiate(GunData.MaxDistance, GunData.Damage, GunData.Name, dir);
             }
 

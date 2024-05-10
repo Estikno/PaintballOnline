@@ -78,11 +78,17 @@ public class Bullet : MonoBehaviour
         message.AddUShort(BulletId);
         //the bool is true if it has hitted sth
         message.AddBool(true);
+        message.AddFloat(damage);
         message.AddVector3(hitPosition);
         message.AddVector3(normal);
 
         NetworkManager.Instance.Server.SendToAll(message);
 
         Destroy(gameObject);
+    }
+
+    private void OnDestroy()
+    {
+        list.Remove(BulletId);
     }
 }

@@ -68,3 +68,6 @@ MonoBehaviour:
   - Name: Basic
     prefab: {fileID: 4573064340581062179, guid: ddde46a2ebe9dae43a5670a2e0c015a3,
       type: 3}
+  bullet: {fileID: 1828928095917957722, guid: 84b3e11a2e1c5404aa75203d93810ef0, type: 3}
+  bulletImpactEffect: {fileID: 5568584061951980024, guid: 5e48b5d5bd1c7ef408c4d26e5d090017,
+    type: 3}

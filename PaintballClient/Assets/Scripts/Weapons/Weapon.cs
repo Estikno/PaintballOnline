@@ -58,7 +58,7 @@ public class Weapon : MonoBehaviour
 
     public void Shoot(bool isLocalPlayer)
     {
-        print("shoot: " + DOTween.Kill(transform, false));
+        //print("shoot: " + DOTween.Kill(transform, false));
 
         //anim.Play("Idle");
 
