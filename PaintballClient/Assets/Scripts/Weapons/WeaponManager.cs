@@ -53,6 +53,9 @@ public class WeaponManager : MonoBehaviour
         {
             gfx.layer = 0;
         }
+
+        //sway
+        weapon.weaponSway.Stop();
     }
 
     /// <summary>
@@ -81,6 +84,9 @@ public class WeaponManager : MonoBehaviour
 
         //weapon.SelectAnimation();
         Weapons[Helper.GetGunIndexWithType(weapon.GunType)] = weapon;
+
+        //sway
+        weapon.weaponSway.Initiate();
     }
 
     public void Shoot(Weapon weapon, bool isLocalPlayer)

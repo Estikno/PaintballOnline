@@ -31,6 +31,11 @@ public class Weapon : MonoBehaviour
     [Header("OBJ References")]
     public int weaponGfxLayer;
     public GameObject[] weaponGFXs;
+    public WeaponSway weaponSway;
+
+    [Header("Values")]
+    [SerializeField] private float camShakeMagnitude = .025f;
+    [SerializeField] private float camShakeDuration = .05f;
 
     //Weapons properties
     public ushort WeaponId { get; private set; }
@@ -45,7 +50,6 @@ public class Weapon : MonoBehaviour
     [Header("Recoil")]
     [SerializeField] private float kickBackForce = 0.075f;
 
-    //private Animator anim;
     public Interpolator interpolator { get; private set; }
 
     private bool reloading;
@@ -59,6 +63,7 @@ public class Weapon : MonoBehaviour
     public void Shoot(bool isLocalPlayer)
     {
         //print("shoot: " + DOTween.Kill(transform, false));
+        DOTween.Kill(transform, false);
 
         //anim.Play("Idle");
 
@@ -86,6 +91,8 @@ public class Weapon : MonoBehaviour
                 AudioManager.Instance.Play("GunShoot", true);
             else
                 AudioManager.Instance.PlayAudioIn3DSpace("GunShoot", transform.position, 5, 100);*/
+
+            if (isLocalPlayer) StartCoroutine(CameraShake.Instance.Shake(camShakeDuration, camShakeMagnitude));
         }
     }
 
@@ -97,6 +104,7 @@ public class Weapon : MonoBehaviour
         if (!isFinished)
         {
             //anim.Play("Idle");
+            weaponSway.Stop();
 
             //make the rotation animation using dotween
             transform.DOLocalRotate(new Vector3(360.01f, 0f, 0f), _reloadTime, RotateMode.FastBeyond360).SetEase(Ease.OutCubic);
@@ -110,6 +118,7 @@ public class Weapon : MonoBehaviour
         else
         {
             DOTween.Kill(transform, false);
+            weaponSway.Initiate();
 
             //set the position to 0 so that there is no problem with the movement
             transform.localRotation = Quaternion.Euler(Vector3.zero);

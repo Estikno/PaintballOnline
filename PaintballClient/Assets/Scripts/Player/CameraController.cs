@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
+    public static float MouseX { get; private set; }
+    public static float MouseY { get; private set; }
+
     [SerializeField] private float sensX = 100f;
     [SerializeField] private float sensY = 100f;
 
@@ -23,9 +26,15 @@ public class CameraController : MonoBehaviour
 
     private void Update() //moves the camera by the mouses inputs
     {
+        //mouse input
         mouseX = Input.GetAxisRaw("Mouse X");
         mouseY = Input.GetAxisRaw("Mouse Y");
 
+        //set static variables
+        MouseX = mouseX;
+        MouseY = mouseY;
+
+        //apply rotations
         yRotation += mouseX * sensX * Time.deltaTime;
         xRotation -= mouseY * sensY * Time.deltaTime;
 

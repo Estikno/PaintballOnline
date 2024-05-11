@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4124399286599391546}
   - component: {fileID: 7166523765459588770}
   - component: {fileID: 9040656659257005155}
+  - component: {fileID: 8380474907001913550}
   m_Layer: 0
   m_Name: PaintballGun
   m_TagString: Untagged
@@ -49,6 +50,9 @@ MonoBehaviour:
   weaponGfxLayer: 6
   weaponGFXs:
   - {fileID: 4747779058397623701}
+  weaponSway: {fileID: 8380474907001913550}
+  camShakeMagnitude: 0.025
+  camShakeDuration: 0.05
   Held: 0
   kickBackForce: 0.075
 --- !u!114 &9040656659257005155
@@ -67,6 +71,20 @@ MonoBehaviour:
   timeElapsed: 0
   timeToReachTarget: 0.05
   movementThreshold: 0.05
+--- !u!114 &8380474907001913550
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4573064340581062179}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db5f130e62018af4f9fa623da176a37b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  intensity: 0.325
+  smooth: 10
 --- !u!1001 &5558029319698712772
 PrefabInstance:
   m_ObjectHideFlags: 0
