@@ -33,14 +33,12 @@ public class GameLogic : MonoBehaviour
     public GameObject PlayerPrefab => playerPrefab;
     public GameObject LocalPlayerPrefab => localPlayerPrefab;
     public NameWeapon[] Weapons => weapons;
-    public GameObject Bullet => bullet;
     public GameObject BulletImpactEffect => bulletImpactEffect;
 
     [Header("Prefabs")]
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private GameObject localPlayerPrefab;
     [SerializeField] private NameWeapon[] weapons;
-    [SerializeField] private GameObject bullet;
 
     [Header("Effects")]
     [SerializeField] private GameObject bulletImpactEffect;

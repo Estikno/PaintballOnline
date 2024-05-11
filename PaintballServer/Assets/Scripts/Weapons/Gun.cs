@@ -70,41 +70,46 @@ public class Gun : Weapon
     {
         if (canShoot())
         {
-            //instantiate a bullet
-            Bullet bullet = Instantiate(GameLogic.Instance.Bullet, gunPoint.position, Quaternion.identity).GetComponent<Bullet>();
-            Vector3 dir;
-
             //traces a raycast to see with what collides the shot
             if (Physics.Raycast(cam.position, cam.forward, out RaycastHit hitInfo, GunData.MaxDistance, whatToHit))
             {
-                dir = Vector3.Normalize(hitInfo.point - gunPoint.position);
-                bullet.Initiate(GunData.MaxDistance, GunData.Damage, GunData.Name, dir);
+                //damage the player
+
+                //sends the shot
+                SendShoot(hitInfo.point, hitInfo.normal);
             }
             else
             {
-                dir = Vector3.Normalize((cam.forward * GunData.MaxDistance) - gunPoint.position);
-                bullet.Initiate(GunData.MaxDistance, GunData.Damage, GunData.Name, dir);
+                SendShoot();
             }
 
             //update variables
             currentAmmo--;
             timeSinceLastShoot = 0;
-
-            //Send the message
-            SendShoot(dir);
         }
     }
 
     #region Messages
 
     //Sends a shoot message
-    private void SendShoot(Vector3 dir)
+    private void SendShoot(Vector3 hitPoint, Vector3 normal)
     {
         Message message = Message.Create(MessageSendMode.Reliable, ServerToClientId.weaponShoot);
         message.AddUShort(WeaponId);
         message.AddUShort(Manager.player.Id);
-        message.AddVector3(dir);
-        message.AddVector3(gunPoint.position);
+        message.AddBool(true);
+        message.AddVector3(hitPoint);
+        message.AddVector3(normal);
+
+        NetworkManager.Instance.Server.SendToAll(message);
+    }
+
+    private void SendShoot()
+    {
+        Message message = Message.Create(MessageSendMode.Reliable, ServerToClientId.weaponShoot);
+        message.AddUShort(WeaponId);
+        message.AddUShort(Manager.player.Id);
+        message.AddBool(false);
 
         NetworkManager.Instance.Server.SendToAll(message);
     }

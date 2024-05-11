@@ -83,10 +83,15 @@ public class WeaponManager : MonoBehaviour
         Weapons[Helper.GetGunIndexWithType(weapon.GunType)] = weapon;
     }
 
-    public void Shoot(Weapon weapon, bool isLocalPlayer, Vector3 dir, Vector3 bulletStartPos)
+    public void Shoot(Weapon weapon, bool isLocalPlayer)
     {
         weapon.Shoot(isLocalPlayer);
-        Instantiate(GameLogic.Instance.Bullet, bulletStartPos, Quaternion.identity).GetComponent<Bullet>().Initiate(dir);
+    }
+
+    public void Shoot(Weapon weapon, bool isLocalPlayer, Vector3 hitPoint, Vector3 normal)
+    {
+        weapon.Shoot(isLocalPlayer);
+        Instantiate(GameLogic.Instance.BulletImpactEffect, hitPoint, Quaternion.identity).transform.forward = normal;
     }
 
     public void Reload(Weapon weapon, bool isFinished, float reloadTime, bool isLocalPlayer)
@@ -161,7 +166,12 @@ public class WeaponManager : MonoBehaviour
         if (Weapon.Weapons.TryGetValue(message.GetUShort(), out Weapon weapon))
         {
             if (Player.list.TryGetValue(message.GetUShort(), out Player player))
-                player.WeaponManager.Shoot(weapon, player.IsLocal, message.GetVector3(), message.GetVector3());
+            {
+                if (message.GetBool())
+                    player.WeaponManager.Shoot(weapon, player.IsLocal, message.GetVector3(), message.GetVector3());
+                else
+                    player.WeaponManager.Shoot(weapon, player.IsLocal);
+            }
         }
     }
 
