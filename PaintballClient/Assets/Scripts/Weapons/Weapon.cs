@@ -104,7 +104,7 @@ public class Weapon : MonoBehaviour
         if (!isFinished)
         {
             //anim.Play("Idle");
-            weaponSway.Stop();
+            if(isLocalPlayer) weaponSway.Stop();
 
             //make the rotation animation using dotween
             transform.DOLocalRotate(new Vector3(360.01f, 0f, 0f), _reloadTime, RotateMode.FastBeyond360).SetEase(Ease.OutCubic);
@@ -118,7 +118,7 @@ public class Weapon : MonoBehaviour
         else
         {
             DOTween.Kill(transform, false);
-            weaponSway.Initiate();
+            if(isLocalPlayer) weaponSway.Initiate();
 
             //set the position to 0 so that there is no problem with the movement
             transform.localRotation = Quaternion.Euler(Vector3.zero);

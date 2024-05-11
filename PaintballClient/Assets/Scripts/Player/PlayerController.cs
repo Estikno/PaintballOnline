@@ -5,7 +5,32 @@ using Riptide;
 
 public class PlayerController : MonoBehaviour
 {
+    private static PlayerController instance;
+    public static PlayerController Instance
+    {
+        get => instance;
+        private set
+        {
+            if (instance == null)
+            {
+                instance = value;
+            }
+            else if (instance != null)
+            {
+                Debug.Log($"{nameof(PlayerController)} instance already exists, destroying duplicate!");
+                Destroy(value);
+            }
+        }
+    }
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
     [SerializeField] private Transform camHolder;
+
+    public bool[] Inputs => inputs;
 
     private bool[] inputs;
 

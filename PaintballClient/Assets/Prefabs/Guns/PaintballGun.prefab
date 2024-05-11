@@ -83,8 +83,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db5f130e62018af4f9fa623da176a37b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  intensity: 0.325
+  intensity: 0.25
   smooth: 10
+  speedCurve: 0
+  travelLimit: {x: 0.025, y: 0.025, z: 0.025}
+  bobLimit: {x: 0.01, y: 0.01, z: 0.01}
+  bobExaggeration: 1
+  multiplier: {x: 2, y: 2, z: 2}
 --- !u!1001 &5558029319698712772
 PrefabInstance:
   m_ObjectHideFlags: 0

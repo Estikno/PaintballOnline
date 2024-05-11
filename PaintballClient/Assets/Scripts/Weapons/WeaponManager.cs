@@ -36,7 +36,7 @@ public class WeaponManager : MonoBehaviour
     /// This drops a weapon
     /// </summary>
     /// <param name="weapon">The weapon to drop</param>
-    public void Drop(Weapon weapon)
+    public void Drop(Weapon weapon, bool isLocalPlayer)
     {
         //Kill all dotween proceses in the weapon transform so there is no strange position changes
         DOTween.Kill(weapon.transform, false);
@@ -55,7 +55,7 @@ public class WeaponManager : MonoBehaviour
         }
 
         //sway
-        weapon.weaponSway.Stop();
+        if(isLocalPlayer) weapon.weaponSway.Stop();
     }
 
     /// <summary>
@@ -86,7 +86,7 @@ public class WeaponManager : MonoBehaviour
         Weapons[Helper.GetGunIndexWithType(weapon.GunType)] = weapon;
 
         //sway
-        weapon.weaponSway.Initiate();
+        if(isLocalPlayer) weapon.weaponSway.Initiate();
     }
 
     public void Shoot(Weapon weapon, bool isLocalPlayer)
@@ -144,7 +144,7 @@ public class WeaponManager : MonoBehaviour
         {
             if (Player.list.TryGetValue(message.GetUShort(), out Player player))
             {
-                player.WeaponManager.Drop(weapon);
+                player.WeaponManager.Drop(weapon, player.IsLocal);
             }
         }
     }

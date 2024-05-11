@@ -36,7 +36,7 @@ public class WeaponSway : MonoBehaviour
         //calculate target rotation
         Quaternion txAdj = Quaternion.AngleAxis(-intensity * CameraController.MouseX * multiplier, Vector3.up);
         Quaternion tyAdj = Quaternion.AngleAxis(intensity * CameraController.MouseY * multiplier, Vector3.right);
-        Quaternion tzAdj = Quaternion.AngleAxis(intensity * CameraController.MouseY * multiplier, Vector3.forward);
+        Quaternion tzAdj = Quaternion.AngleAxis(intensity * CameraController.MouseX * multiplier, Vector3.forward);
         Quaternion targetRotation = originRotation * txAdj * tyAdj * tzAdj;
 
         //rotate towards target rotation
