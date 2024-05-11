@@ -82,7 +82,7 @@ public class Gun : Weapon
             }
             else
             {
-                dir = (cam.forward * GunData.MaxDistance) - gunPoint.position;
+                dir = Vector3.Normalize((cam.forward * GunData.MaxDistance) - gunPoint.position);
                 bullet.Initiate(GunData.MaxDistance, GunData.Damage, GunData.Name, dir);
             }
 
