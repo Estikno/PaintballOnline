@@ -87,10 +87,10 @@ public class Weapon : MonoBehaviour
             transform.DOLocalMoveZ(0f, .2f);
 
             //audio
-            /*if (isLocalPlayer)
+            if (isLocalPlayer)
                 AudioManager.Instance.Play("GunShoot", true);
             else
-                AudioManager.Instance.PlayAudioIn3DSpace("GunShoot", transform.position, 5, 100);*/
+                AudioManager.Instance.PlayAudioIn3DSpace("GunShoot", transform.position, 5, 100);
 
             if (isLocalPlayer) StartCoroutine(CameraShake.Instance.Shake(camShakeDuration, camShakeMagnitude));
         }
@@ -110,10 +110,10 @@ public class Weapon : MonoBehaviour
             transform.DOLocalRotate(new Vector3(360.01f, 0f, 0f), _reloadTime, RotateMode.FastBeyond360).SetEase(Ease.OutCubic);
 
             //audio
-            /*if (isLocalPlayer)
+            if (isLocalPlayer)
                 AudioManager.Instance.Play("GunReload", true);
             else
-                AudioManager.Instance.PlayAudioIn3DSpace("GunReload", transform.position, 5, 30);*/
+                AudioManager.Instance.PlayAudioIn3DSpace("GunReload", transform.position, 5, 30);
         }
         else
         {

@@ -77,7 +77,7 @@ public class NetworkManager : MonoBehaviour
         }
     }
 
-    [SerializeField] private string ip;
+    //[SerializeField] private string ip;
     [SerializeField] private ushort port;
 
     [Space(10)]
@@ -115,7 +115,7 @@ public class NetworkManager : MonoBehaviour
         Client.Disconnect();
     }
 
-    public void Connect()
+    public void Connect(string ip)
     {
         Client.Connect($"{ip}:{port}");
     }

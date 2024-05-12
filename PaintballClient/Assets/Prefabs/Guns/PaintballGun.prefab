@@ -51,7 +51,7 @@ MonoBehaviour:
   weaponGFXs:
   - {fileID: 4747779058397623701}
   weaponSway: {fileID: 8380474907001913550}
-  camShakeMagnitude: 0.025
+  camShakeMagnitude: 0.055
   camShakeDuration: 0.05
   Held: 0
   kickBackForce: 0.075
@@ -85,11 +85,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   intensity: 0.25
   smooth: 10
-  speedCurve: 0
-  travelLimit: {x: 0.025, y: 0.025, z: 0.025}
-  bobLimit: {x: 0.01, y: 0.01, z: 0.01}
-  bobExaggeration: 1
-  multiplier: {x: 2, y: 2, z: 2}
 --- !u!1001 &5558029319698712772
 PrefabInstance:
   m_ObjectHideFlags: 0

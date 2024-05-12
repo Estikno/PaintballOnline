@@ -28,6 +28,7 @@ public class ConnectUIManager : MonoBehaviour
     [Header("Connect")]
     [SerializeField] private GameObject connectUI;
     [SerializeField] private TMP_InputField usernameField;
+    [SerializeField] private TMP_InputField IPField;
 
     private void Awake()
     {
@@ -37,14 +38,16 @@ public class ConnectUIManager : MonoBehaviour
     public void ConnectClicked()
     {
         usernameField.interactable = false;
+        IPField.interactable = false;
         connectUI.SetActive(false);
 
-        NetworkManager.Instance.Connect();
+        NetworkManager.Instance.Connect(IPField.text);
     }
 
     public void BackToMain()
     {
         usernameField.interactable = true;
+        IPField.interactable = true;
         connectUI.SetActive(true);
     }
 
