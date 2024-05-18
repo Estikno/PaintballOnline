@@ -73,10 +73,10 @@ public class Weapon : MonoBehaviour
             //anim.Play("Attack");
 
             //audio
-            /*if (isLocalPlayer)
+            if (isLocalPlayer)
                 AudioManager.Instance.Play("KnifeImpact", true);
             else
-                AudioManager.Instance.PlayAudioIn3DSpace("KnifeImpact", transform.position, 5, 30);*/
+                AudioManager.Instance.PlayAudioIn3DSpace("KnifeImpact", transform.position, 5, 30);
         }
         else
         {
@@ -86,9 +86,15 @@ public class Weapon : MonoBehaviour
             //Move the gun slowly to the original position
             transform.DOLocalMoveZ(0f, .2f);
 
-            //audio
+            
             if (isLocalPlayer)
+            {
+                //audio
                 AudioManager.Instance.Play("GunShoot", true);
+
+                //ammo text
+                GameLogic.Instance.CurrentAmmoText.text = $"{Int32.Parse(GameLogic.Instance.CurrentAmmoText.text) - 1}";
+            }
             else
                 AudioManager.Instance.PlayAudioIn3DSpace("GunShoot", transform.position, 5, 100);
 
@@ -119,6 +125,9 @@ public class Weapon : MonoBehaviour
         {
             DOTween.Kill(transform, false);
             if(isLocalPlayer) weaponSway.Initiate();
+
+            //ammo text
+            GameLogic.Instance.CurrentAmmoText.text = "30";
 
             //set the position to 0 so that there is no problem with the movement
             transform.localRotation = Quaternion.Euler(Vector3.zero);

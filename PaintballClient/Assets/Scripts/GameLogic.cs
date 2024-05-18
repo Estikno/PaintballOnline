@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 [Serializable]
 public struct NameWeapon
@@ -34,6 +35,7 @@ public class GameLogic : MonoBehaviour
     public GameObject LocalPlayerPrefab => localPlayerPrefab;
     public NameWeapon[] Weapons => weapons;
     public GameObject BulletImpactEffect => bulletImpactEffect;
+    public TMP_Text CurrentAmmoText => currentAmmoText;
 
     [Header("Prefabs")]
     [SerializeField] private GameObject playerPrefab;
@@ -42,6 +44,9 @@ public class GameLogic : MonoBehaviour
 
     [Header("Effects")]
     [SerializeField] private GameObject bulletImpactEffect;
+
+    [Header("UIs")]
+    [SerializeField] private TMP_Text currentAmmoText;
 
     private void Awake()
     {
