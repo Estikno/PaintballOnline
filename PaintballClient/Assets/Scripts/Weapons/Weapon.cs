@@ -43,6 +43,7 @@ public class Weapon : MonoBehaviour
     [HideInInspector]
     public bool Held;
     public GunType GunType { get; private set; }
+    public ushort Holder;
 
     //The manager that helds this weapons
     public WeaponManager manager { get; private set; }
@@ -60,7 +61,7 @@ public class Weapon : MonoBehaviour
         interpolator = GetComponent<Interpolator>();
     }
 
-    public void Shoot(bool isLocalPlayer)
+    public void Shoot(bool isLocalPlayer, ushort PlayerId)
     {
         //print("shoot: " + DOTween.Kill(transform, false));
         DOTween.Kill(transform, false);
@@ -86,23 +87,20 @@ public class Weapon : MonoBehaviour
             //Move the gun slowly to the original position
             transform.DOLocalMoveZ(0f, .2f);
 
-            
+            //audio
             if (isLocalPlayer)
-            {
-                //audio
                 AudioManager.Instance.Play("GunShoot", true);
-
-                //ammo text
-                GameLogic.Instance.CurrentAmmoText.text = $"{Int32.Parse(GameLogic.Instance.CurrentAmmoText.text) - 1}";
-            }
             else
                 AudioManager.Instance.PlayAudioIn3DSpace("GunShoot", transform.position, 5, 100);
 
             if (isLocalPlayer) StartCoroutine(CameraShake.Instance.Shake(camShakeDuration, camShakeMagnitude));
+
+            //ammo text
+            if (isLocalPlayer && Holder == PlayerId) SetAmmoText($"{Int32.Parse(GameLogic.Instance.CurrentAmmoText.text) - 1}");
         }
     }
 
-    public void Reload(bool isFinished, float _reloadTime, bool isLocalPlayer)
+    public void Reload(bool isFinished, float _reloadTime, bool isLocalPlayer, ushort PlayerId)
     {
         reloading = !isFinished;
         //print("reloading: " + isFinished);
@@ -115,9 +113,14 @@ public class Weapon : MonoBehaviour
             //make the rotation animation using dotween
             transform.DOLocalRotate(new Vector3(360.01f, 0f, 0f), _reloadTime, RotateMode.FastBeyond360).SetEase(Ease.OutCubic);
 
-            //audio
             if (isLocalPlayer)
+            {
+                //audio
                 AudioManager.Instance.Play("GunReload", true);
+
+                //ammo text
+                if(Holder == PlayerId) SetAmmoText("30");
+            }
             else
                 AudioManager.Instance.PlayAudioIn3DSpace("GunReload", transform.position, 5, 30);
         }
@@ -125,9 +128,6 @@ public class Weapon : MonoBehaviour
         {
             DOTween.Kill(transform, false);
             if(isLocalPlayer) weaponSway.Initiate();
-
-            //ammo text
-            GameLogic.Instance.CurrentAmmoText.text = "30";
 
             //set the position to 0 so that there is no problem with the movement
             transform.localRotation = Quaternion.Euler(Vector3.zero);
@@ -176,6 +176,11 @@ public class Weapon : MonoBehaviour
     {
         anim.Play("Select");
     }*/
+
+    private void SetAmmoText(string text)
+    {
+        GameLogic.Instance.CurrentAmmoText.text = text;
+    }
 
     #region Messages
 

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using DG.Tweening;
+using System;
 
 public class WeaponManager : MonoBehaviour
 {
@@ -62,7 +63,7 @@ public class WeaponManager : MonoBehaviour
     /// This picks up a weapon
     /// </summary>
     /// <param name="weapon"></param>
-    public void PickUp(Weapon weapon, bool isLocalPlayer)
+    public void PickUp(Weapon weapon, bool isLocalPlayer, ushort PlayerId)
     {
         //Disable interpolator
         weapon.interpolator.ClearTransforms();
@@ -87,22 +88,24 @@ public class WeaponManager : MonoBehaviour
 
         //sway
         if(isLocalPlayer) weapon.weaponSway.Initiate();
+
+        weapon.Holder = PlayerId;
     }
 
-    public void Shoot(Weapon weapon, bool isLocalPlayer)
+    public void Shoot(Weapon weapon, bool isLocalPlayer, ushort PlayerId)
     {
-        weapon.Shoot(isLocalPlayer);
+        weapon.Shoot(isLocalPlayer, PlayerId);
     }
 
-    public void Shoot(Weapon weapon, bool isLocalPlayer, Vector3 hitPoint, Vector3 normal)
+    public void Shoot(Weapon weapon, bool isLocalPlayer, Vector3 hitPoint, Vector3 normal, ushort PlayerId)
     {
-        weapon.Shoot(isLocalPlayer);
+        weapon.Shoot(isLocalPlayer, PlayerId);
         Instantiate(GameLogic.Instance.BulletImpactEffect, hitPoint, Quaternion.identity).transform.forward = normal;
     }
 
-    public void Reload(Weapon weapon, bool isFinished, float reloadTime, bool isLocalPlayer)
+    public void Reload(Weapon weapon, bool isFinished, float reloadTime, bool isLocalPlayer, ushort PlayerId)
     {
-        weapon.Reload(isFinished, reloadTime, isLocalPlayer);
+        weapon.Reload(isFinished, reloadTime, isLocalPlayer, PlayerId);
     }
 
     public void SetRotation(Vector3 forward)
@@ -132,7 +135,7 @@ public class WeaponManager : MonoBehaviour
         {
             if (Player.list.TryGetValue(playerId, out Player player))
             {
-                player.WeaponManager.PickUp(weapon, player.IsLocal);
+                player.WeaponManager.PickUp(weapon, player.IsLocal, player.Id);
             }
         }
     }
@@ -174,9 +177,9 @@ public class WeaponManager : MonoBehaviour
             if (Player.list.TryGetValue(message.GetUShort(), out Player player))
             {
                 if (message.GetBool())
-                    player.WeaponManager.Shoot(weapon, player.IsLocal, message.GetVector3(), message.GetVector3());
+                    player.WeaponManager.Shoot(weapon, player.IsLocal, message.GetVector3(), message.GetVector3(), player.Id);
                 else
-                    player.WeaponManager.Shoot(weapon, player.IsLocal);
+                    player.WeaponManager.Shoot(weapon, player.IsLocal, player.Id);
             }
         }
     }
@@ -186,7 +189,7 @@ public class WeaponManager : MonoBehaviour
     {
         if (Weapon.Weapons.TryGetValue(message.GetUShort(), out Weapon weapon))
             if (Player.list.TryGetValue(message.GetUShort(), out Player player))
-                player.WeaponManager.Reload(weapon, message.GetBool(), message.GetFloat(), player.IsLocal);
+                player.WeaponManager.Reload(weapon, message.GetBool(), message.GetFloat(), player.IsLocal, player.Id);
     }
 
     /*[MessageHandler((ushort)ServerToClientId.knifeAttack)]
