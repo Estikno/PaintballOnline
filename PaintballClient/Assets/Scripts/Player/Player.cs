@@ -16,6 +16,11 @@ public class Player : MonoBehaviour
     [SerializeField] private Interpolator interpolator;
     [SerializeField] private WeaponManager weaponManager;
 
+    [Header("Player Looking (not local player)")]
+    [SerializeField] private Transform Head;
+    [SerializeField] private Transform weaponHolder;
+    [SerializeField] private Transform model;
+
     private string username;
 
     private void OnDestroy()
@@ -29,8 +34,18 @@ public class Player : MonoBehaviour
 
         interpolator.NewUpdate(tick, newPosition);
 
-        if(!IsLocal)
-            camHolder.forward = forward;
+        /*if(!IsLocal)
+            camHolder.forward = forward;*/
+
+        if (!IsLocal)
+        {
+            float yRotation = Mathf.Atan2(forward.x, forward.z) * Mathf.Rad2Deg;
+
+            Head.forward = forward;
+            weaponHolder.forward = forward;
+            model.rotation = Quaternion.Euler(0, yRotation, 0);
+            camHolder.rotation = Quaternion.Euler(0, yRotation, 0);
+        }
     }
 
     public static void Spawn(ushort id, string username, Vector3 position)

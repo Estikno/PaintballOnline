@@ -12,6 +12,9 @@ public class WeaponManager : MonoBehaviour
     public Weapon[] Weapons { get; private set; } = new Weapon[1]; //The weapons in your inventory
     public int SelectedWeapon { get; private set; } = 2; //The selected weapon in your inventory
 
+    [SerializeField] private Transform weaponHolder;
+    [SerializeField] private WeaponFingerValues weaponFingerValues;
+
     /// <summary>
     /// This selectes a weapon
     /// </summary>
@@ -69,9 +72,11 @@ public class WeaponManager : MonoBehaviour
         weapon.interpolator.ClearTransforms();
 
         //Set the position
-        weapon.transform.SetParent(transform);
+        //weapon.transform.SetParent(transform);
+        weapon.transform.SetParent(weaponHolder);
         weapon.transform.localPosition = Vector3.zero;
         weapon.transform.localRotation = Quaternion.Euler(Vector3.zero);
+        if (isLocalPlayer) weapon.transform.localScale = Vector3.one;
         weapon.Held = true;
 
         //Applies the weaponGfx layer to the meshes
@@ -90,6 +95,9 @@ public class WeaponManager : MonoBehaviour
         if(isLocalPlayer) weapon.weaponSway.Initiate();
 
         weapon.Holder = PlayerId;
+
+        //hand IK
+        if(!isLocalPlayer) weaponFingerValues.Init(weapon.RightHand, weapon.LeftHand, weapon.PoleRight, weapon.PoleLeft);
     }
 
     public void Shoot(Weapon weapon, bool isLocalPlayer, ushort PlayerId)

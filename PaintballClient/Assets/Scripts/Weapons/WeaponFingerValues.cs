@@ -5,20 +5,29 @@ using UnityEngine;
 
 public class WeaponFingerValues : MonoBehaviour
 {
+    [SerializeField] private IK rightHandIk;
+    [SerializeField] private IK leftHandIk;
+
     [SerializeField] private List<Transform> leftFingers;
     [SerializeField] private List<Vector3> leftRotationsOfFingers;
 
     [SerializeField] private List<Transform> rightFingers;
     [SerializeField] private List<Vector3> rightRotationsOfFingers;
 
-    [SerializeField] private Transform rightHandTarget;
-    [SerializeField] private Transform leftHandTarget;
-
     [SerializeField] private Vector3 rightHandRotation;
     [SerializeField] private Vector3 leftHandRotation;
 
-    private void Start()
+    public void Init(Transform rightHandTarget, Transform leftHandTarget, Transform rightPole, Transform leftPole)
     {
+        rightHandIk.Target = rightHandTarget;
+        rightHandIk.Pole = rightPole;
+
+        leftHandIk.Target = leftHandTarget;
+        leftHandIk.Pole = leftPole;
+
+        rightHandIk.Init();
+        leftHandIk.Init();
+
         rightHandTarget.localRotation = Quaternion.Euler(rightHandRotation);
         leftHandTarget.localRotation = Quaternion.Euler(leftHandRotation);
 

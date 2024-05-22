@@ -74,7 +74,7 @@ Transform:
   m_GameObject: {fileID: 2848877495833223346}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.66, y: -0.36, z: 0.6}
+  m_LocalPosition: {x: 0.847044, y: -0.462024, z: 0.77004}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -92,6 +92,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d5ce22c1f5557a4c9777a45eb3bb28e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  weaponHolder: {fileID: 8574185681685292297}
+  weaponFingerValues: {fileID: 0}
 --- !u!1 &4633833608943261793
 GameObject:
   m_ObjectHideFlags: 0
@@ -144,6 +146,9 @@ MonoBehaviour:
   camHolder: {fileID: 8894735316007190685}
   interpolator: {fileID: 346061368150935626}
   weaponManager: {fileID: 8381091483506511287}
+  Head: {fileID: 0}
+  weaponHolder: {fileID: 0}
+  model: {fileID: 0}
 --- !u!114 &346061368150935626
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -213,7 +218,7 @@ Transform:
   m_GameObject: {fileID: 4746361974682162886}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.75, z: 0}
+  m_LocalPosition: {x: 0, y: 1.27, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -374,7 +379,7 @@ GameObject:
   - component: {fileID: 3075397806686083889}
   - component: {fileID: 3416515006792306093}
   - component: {fileID: 2694502877501607101}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -390,8 +395,8 @@ Transform:
   m_GameObject: {fileID: 5141423487277084141}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 0.2834, z: 0}
+  m_LocalScale: {x: 1, y: 1.2834, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6356770087819338746}

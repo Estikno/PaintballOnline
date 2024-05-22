@@ -51,6 +51,17 @@ public class Weapon : MonoBehaviour
     [Header("Recoil")]
     [SerializeField] private float kickBackForce = 0.075f;
 
+    [Header("IK")]
+    [SerializeField] private Transform rightHand;
+    [SerializeField] private Transform leftHand;
+    [SerializeField] private Transform poleRight;
+    [SerializeField] private Transform poleLeft;
+
+    public Transform RightHand => rightHand;
+    public Transform LeftHand => leftHand;
+    public Transform PoleRight => poleRight;
+    public Transform PoleLeft => poleLeft;
+
     public Interpolator interpolator { get; private set; }
 
     private bool reloading;

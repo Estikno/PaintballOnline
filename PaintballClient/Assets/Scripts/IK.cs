@@ -50,8 +50,10 @@ public class IK : MonoBehaviour
         Init();
     }
 
-    void Init()
+    public void Init()
     {
+        if (Target == null) return;
+
         //initial array
         Bones = new Transform[ChainLength + 1];
         Positions = new Vector3[ChainLength + 1];
