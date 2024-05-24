@@ -242,7 +242,7 @@ public class PlayerMovement : MonoBehaviour
         message.AddUShort(NetworkManager.Instance.CurrentTick);
         message.AddVector3(transform.position);
         message.AddVector3(camHolder.forward);
-        message.AddVector3(rb.velocity);
+        message.AddVector3(orientation.InverseTransformDirection(rb.velocity));
 
         NetworkManager.Instance.Server.SendToAll(message);
     }
