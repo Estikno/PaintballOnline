@@ -2,6 +2,7 @@ using Riptide;
 using Riptide.Utils;
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// The id's of the messages send from the server to the client
@@ -84,9 +85,14 @@ public class NetworkManager : MonoBehaviour
 
     [SerializeField] private ushort tickDivergeTolerance = 1;
 
+    //other
+    private string provisionalUsername;
+    private bool hasSentName = false;
+
     private void Awake()
     {
         Instance = this;
+        DontDestroyOnLoad(gameObject);
     }
 
     private void Start()
@@ -108,6 +114,13 @@ public class NetworkManager : MonoBehaviour
     {
         Client.Update();
         ServerTick++;
+
+        if (SceneManager.GetActiveScene().name != "Menu" && !hasSentName)
+        {
+            Debug.Log("Sending name");
+            SendName();
+            hasSentName = true;
+        }
     }
 
     private void OnApplicationQuit()
@@ -115,14 +128,15 @@ public class NetworkManager : MonoBehaviour
         Client.Disconnect();
     }
 
-    public void Connect(string ip)
+    public void Connect(string ip, string username)
     {
+        provisionalUsername = username;
         Client.Connect($"{ip}:{port}");
     }
 
     public void DidConnect(object sender, EventArgs e)
     {
-        ConnectUIManager.Instance.SendName();
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 
     private void FailedToConnect(object sender, EventArgs e)
@@ -137,7 +151,10 @@ public class NetworkManager : MonoBehaviour
 
     private void DidDisconnect(object sender, EventArgs e)
     {
-        ConnectUIManager.Instance.BackToMain();
+        //ConnectUIManager.Instance.BackToMain();
+        SceneManager.LoadScene(0);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     private void SetTick(ushort serverTick)
@@ -153,5 +170,13 @@ public class NetworkManager : MonoBehaviour
     private static void Sync(Message message)
     {
         Instance.SetTick(message.GetUShort());
+    }
+
+    public void SendName()
+    {
+        Message message = Message.Create(MessageSendMode.Reliable, ClientToServerId.name);
+        message.AddString(provisionalUsername);
+
+        NetworkManager.Instance.Client.Send(message);
     }
 }

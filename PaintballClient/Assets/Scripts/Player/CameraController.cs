@@ -7,8 +7,8 @@ public class CameraController : MonoBehaviour
     public static float MouseX { get; private set; }
     public static float MouseY { get; private set; }
 
-    [SerializeField] private float sensX = 100f;
-    [SerializeField] private float sensY = 100f;
+    /*[SerializeField] private float sensX = 100f;
+    [SerializeField] private float sensY = 100f;*/
 
     [SerializeField] private Transform camHolder;
 
@@ -30,12 +30,16 @@ public class CameraController : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+            SettingsManager.GetMouseActivity = false;
         }
-        else if(Input.GetKeyDown(KeyCode.Escape))
+        else if (Input.GetKeyDown(KeyCode.Escape))
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+            SettingsManager.GetMouseActivity = true;
         }
+
+        if (!SettingsManager.GetMouseActivity) return;
 
         //mouse input
         mouseX = Input.GetAxisRaw("Mouse X");
@@ -46,8 +50,8 @@ public class CameraController : MonoBehaviour
         MouseY = mouseY;
 
         //apply rotations
-        yRotation += mouseX * sensX * Time.deltaTime;
-        xRotation -= mouseY * sensY * Time.deltaTime;
+        yRotation += mouseX * SettingsManager.SensitivityX * Time.deltaTime;
+        xRotation -= mouseY * SettingsManager.SensitivityY * Time.deltaTime;
 
         xRotation = Mathf.Clamp(xRotation, -88f, 88f);
 

@@ -25,9 +25,8 @@ public class ConnectUIManager : MonoBehaviour
         }
     }
 
-    [Header("UIs")]
-    [SerializeField] private GameObject connectUI;
-    [SerializeField] private GameObject gameUI;
+    /*[Header("UIs")]
+    [SerializeField] private GameObject connectUI;*/
 
     [Header("Fields")]
     [SerializeField] private TMP_InputField usernameField;
@@ -44,10 +43,9 @@ public class ConnectUIManager : MonoBehaviour
         IPField.interactable = false;
 
         //set UIs values
-        connectUI.SetActive(false);
-        gameUI.SetActive(true);
+        //connectUI.SetActive(false);
 
-        NetworkManager.Instance.Connect(IPField.text);
+        NetworkManager.Instance.Connect(IPField.text, usernameField.text);
     }
 
     public void BackToMain()
@@ -56,15 +54,6 @@ public class ConnectUIManager : MonoBehaviour
         IPField.interactable = true;
 
         //set UIs values
-        connectUI.SetActive(true);
-        gameUI.SetActive(false);
-    }
-
-    public void SendName()
-    {
-        Message message = Message.Create(MessageSendMode.Reliable, ClientToServerId.name);
-        message.AddString(usernameField.text);
-
-        NetworkManager.Instance.Client.Send(message);
+        //connectUI.SetActive(true);
     }
 }
