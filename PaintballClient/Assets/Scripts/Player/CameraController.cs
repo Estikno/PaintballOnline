@@ -26,6 +26,17 @@ public class CameraController : MonoBehaviour
 
     private void Update() //moves the camera by the mouses inputs
     {
+        if (Input.GetKeyDown(KeyCode.Escape) && !Cursor.visible)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+
         //mouse input
         mouseX = Input.GetAxisRaw("Mouse X");
         mouseY = Input.GetAxisRaw("Mouse Y");

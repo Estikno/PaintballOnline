@@ -15,6 +15,7 @@ public class Player : MonoBehaviour
     [SerializeField] private Transform camHolder;
     [SerializeField] private Interpolator interpolator;
     [SerializeField] private WeaponManager weaponManager;
+    [SerializeField] private Animator anim;
 
     [Header("Player Looking (not local player)")]
     [SerializeField] private Transform Head;
@@ -28,7 +29,7 @@ public class Player : MonoBehaviour
         list.Remove(Id);
     }
 
-    private void Move(ushort tick, Vector3 newPosition, Vector3 forward)
+    private void Move(ushort tick, Vector3 newPosition, Vector3 forward, Vector3 velocity)
     {
         //transform.position = newPosition;
 
@@ -45,6 +46,10 @@ public class Player : MonoBehaviour
             weaponHolder.forward = forward;
             model.rotation = Quaternion.Euler(0, yRotation, 0);
             camHolder.rotation = Quaternion.Euler(0, yRotation, 0);
+
+            //animator
+            anim.SetFloat("VelocityX", velocity.x);
+            anim.SetFloat("VelocityZ", velocity.z);
         }
     }
 
@@ -82,7 +87,7 @@ public class Player : MonoBehaviour
     private static void PlayerMovement(Message message)
     {
         if (list.TryGetValue(message.GetUShort(), out Player player))
-            player.Move(message.GetUShort(), message.GetVector3(), message.GetVector3());
+            player.Move(message.GetUShort(), message.GetVector3(), message.GetVector3(), message.GetVector3());
     }
 
     #endregion
