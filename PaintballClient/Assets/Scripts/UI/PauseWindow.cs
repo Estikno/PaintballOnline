@@ -41,6 +41,7 @@ public class PauseWindow : MonoBehaviour
 
     public void Exit()
     {
+        SettingsManager.GetMouseActivity = true;
         NetworkManager.Instance.Disconnect();
         SceneManager.LoadScene(0);
     }
