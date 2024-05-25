@@ -134,6 +134,12 @@ public class NetworkManager : MonoBehaviour
         Client.Connect($"{ip}:{port}");
     }
 
+    public void Disconnect()
+    {
+        Client.Disconnect();
+        hasSentName = false;
+    }
+
     public void DidConnect(object sender, EventArgs e)
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);

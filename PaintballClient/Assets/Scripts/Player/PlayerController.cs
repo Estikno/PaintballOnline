@@ -43,6 +43,8 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        if (PauseWindow.Instance.IsPaused) return;
+
         if(Input.GetKey(KeyCode.W))
             inputs[0] = true;
 
