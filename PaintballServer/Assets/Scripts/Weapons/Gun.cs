@@ -1,8 +1,6 @@
 using Riptide;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting.Antlr3.Runtime.Tree;
-using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class Gun : Weapon
