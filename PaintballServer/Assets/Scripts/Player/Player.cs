@@ -16,6 +16,9 @@ public class Player : MonoBehaviour
     [SerializeField] private PlayerMovement playerMovement;
     [SerializeField] private WeaponManager weaponManager;
 
+    public int Health => health;
+    private int health = 100;
+
     private void OnDestroy()
     {
         list.Remove(Id);
@@ -33,6 +36,19 @@ public class Player : MonoBehaviour
 
         player.SendSpawned();
         list.Add(id, player);
+    }
+
+    public void Damage(int damage)
+    {
+        health -= damage;
+        SendHealthValue();
+
+        Debug.Log($"{Username} receieved {damage} points of damage");
+
+        if(Health < 0)
+        {
+            //send death
+        }
     }
 
     #region Messages
@@ -54,6 +70,14 @@ public class Player : MonoBehaviour
         message.AddVector3(transform.parent.position);
 
         return message;
+    }
+
+    private void SendHealthValue()
+    {
+        Message message = Message.Create(MessageSendMode.Reliable, ServerToClientId.health);
+        message.AddInt(Health);
+
+        NetworkManager.Instance.Server.Send(message, Id);
     }
 
     [MessageHandler((ushort)ClientToServerId.name)]

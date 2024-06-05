@@ -2,6 +2,7 @@ using Riptide;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting.Antlr3.Runtime.Tree;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class Gun : Weapon
@@ -71,6 +72,27 @@ public class Gun : Weapon
         if (canShoot())
         {
             //traces a raycast to see with what collides the shot
+            RaycastHit[] hitsInfo = Physics.RaycastAll(cam.position, cam.forward, GunData.MaxDistance, whatToHit);
+
+            if (hitsInfo.Length > 1)
+            {
+                Player player = hitsInfo[1].transform.GetComponentInParent<Player>();
+                
+                if (player != null)
+                {
+                    //damage the player
+                    player.Damage(GunData.Damage);
+                }
+
+                //sends the shot
+                SendShoot(hitsInfo[1].point, hitsInfo[1].normal);
+            }
+            else
+            {
+                SendShoot();
+            }
+
+            /*
             if (Physics.Raycast(cam.position, cam.forward, out RaycastHit hitInfo, GunData.MaxDistance, whatToHit))
             {
                 //damage the player
@@ -81,7 +103,7 @@ public class Gun : Weapon
             else
             {
                 SendShoot();
-            }
+            }*/
 
             //update variables
             currentAmmo--;

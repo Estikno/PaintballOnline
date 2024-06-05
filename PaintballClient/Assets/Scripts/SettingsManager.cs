@@ -4,8 +4,8 @@ using UnityEngine;
 
 public static class SettingsManager
 {
-    public static float SensitivityX { get; private set; } = 400f;
-    public static float SensitivityY { get; private set; } = 400f;
+    public static float SensitivityX { get; private set; } = 100f;
+    public static float SensitivityY { get; private set; } = 100f;
     public static bool GetMouseActivity = true;
 
     public static void SetSensitivityX(float sensitivityX)

@@ -55,7 +55,7 @@ MonoBehaviour:
   gunPoint: {fileID: 2512434850506106331}
   whatToHit:
     serializedVersion: 2
-    m_Bits: 503
+    m_Bits: 1527
 --- !u!1 &4434758564460583715
 GameObject:
   m_ObjectHideFlags: 0
