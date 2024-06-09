@@ -54,6 +54,11 @@ public class Player : MonoBehaviour
         }
     }
 
+    public void Respawn(Vector3 pos)
+    {
+        transform.position = pos;
+    }
+
     public static void Spawn(ushort id, string username, Vector3 position)
     {
         Player player;
@@ -89,6 +94,13 @@ public class Player : MonoBehaviour
     {
         if (list.TryGetValue(message.GetUShort(), out Player player))
             player.Move(message.GetUShort(), message.GetVector3(), message.GetVector3(), message.GetVector3());
+    }
+
+    [MessageHandler((ushort)ServerToClientId.respawn)]
+    private static void PlayerRespawn(Message message)
+    {
+        if (list.TryGetValue(message.GetUShort(), out Player player))
+            player.Respawn(message.GetVector3());
     }
 
     #endregion

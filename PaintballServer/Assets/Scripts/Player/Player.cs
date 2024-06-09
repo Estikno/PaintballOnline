@@ -45,9 +45,19 @@ public class Player : MonoBehaviour
 
         Debug.Log($"{Username} receieved {damage} points of damage");
 
-        if(Health < 0)
+        //respawn player
+        if(Health <= 0)
         {
-            //send death
+            Vector3 positionToRespawn = GameLogic.Instance.RespawnPoints[Random.Range(0, GameLogic.Instance.RespawnPoints.Length)].position;
+
+            transform.position = positionToRespawn;
+
+            //send respawn
+            playerMovement.Respawn(positionToRespawn);
+
+            //reset health
+            health = 100;
+            SendHealthValue();
         }
     }
 

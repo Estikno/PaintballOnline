@@ -237,12 +237,24 @@ public class PlayerMovement : MonoBehaviour
 
     private void SendMovement()
     {
+        if (NetworkManager.Instance.CurrentTick % 2 != 0)
+            return;
+
         Message message = Message.Create(MessageSendMode.Unreliable, ServerToClientId.playerMovement);
         message.AddUShort(player.Id);
         message.AddUShort(NetworkManager.Instance.CurrentTick);
         message.AddVector3(transform.position);
         message.AddVector3(camHolder.forward);
         message.AddVector3(orientation.InverseTransformDirection(rb.velocity));
+
+        NetworkManager.Instance.Server.SendToAll(message);
+    }
+
+    public void Respawn(Vector3 pos)
+    {
+        Message message = Message.Create(MessageSendMode.Reliable, ServerToClientId.respawn);
+        message.AddUShort(player.Id);
+        message.AddVector3(pos);
 
         NetworkManager.Instance.Server.SendToAll(message);
     }
