@@ -71,7 +71,6 @@ public class Gun : Weapon
         {
             //traces a raycast to see with what collides the shot
             RaycastHit[] hitsInfo = Physics.RaycastAll(cam.position, cam.forward, GunData.MaxDistance, whatToHit);
-            print(hitsInfo.Length);
 
             if (hitsInfo.Length > 1)
             {
@@ -89,7 +88,6 @@ public class Gun : Weapon
             else
             {
                 SendShoot();
-                print("Shoot to void");
             }
 
             /*

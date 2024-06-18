@@ -104,6 +104,7 @@ public class Weapon : MonoBehaviour
             else
                 AudioManager.Instance.PlayAudioIn3DSpace("GunShoot", transform.position, 5, 100);
 
+            //camera shake
             if (isLocalPlayer) StartCoroutine(CameraShake.Instance.Shake(camShakeDuration, camShakeMagnitude));
 
             //ammo text

@@ -1,6 +1,8 @@
 using Riptide;
+using Riptide.Transports.Tcp;
 using Riptide.Utils;
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -20,7 +22,8 @@ public enum ServerToClientId : ushort
     weaponShoot,
     reloadWeapon,
     health,
-    respawn
+    respawn,
+    ping
 }
 
 /// <summary>
@@ -34,7 +37,8 @@ public enum ClientToServerId : ushort
     switchWeapon,
     pickUpWeapon,
     dropWeapon,
-    reloadWeapon
+    reloadWeapon,
+    ping
 }
 
 public class NetworkManager : MonoBehaviour
@@ -90,6 +94,8 @@ public class NetworkManager : MonoBehaviour
     //other
     private string provisionalUsername;
     private bool hasSentName = false;
+    private bool hasReceiveSync = false;
+    private bool connected = false;
 
     private void Awake()
     {
@@ -103,7 +109,9 @@ public class NetworkManager : MonoBehaviour
 
         RiptideLogger.Initialize(Debug.Log, Debug.Log, Debug.LogWarning, Debug.LogError, false);
 
-        Client = new Client();
+        Client = new Client(); //for udp
+        //Client = new Client(new TcpClient()); //for tcp   
+
         Client.Connected += DidConnect;
         Client.ConnectionFailed += FailedToConnect;
         Client.ClientDisconnected += PlayerLeft;
@@ -123,6 +131,15 @@ public class NetworkManager : MonoBehaviour
             SendName();
             hasSentName = true;
         }
+
+        //ping
+        if (connected && ServerTick % 5 == 0)
+        {
+            Message message = Message.Create(MessageSendMode.Unreliable, ClientToServerId.ping);
+            message.AddString(DateTime.UtcNow.ToString("O"));
+
+            Client.Send(message);
+        }
     }
 
     private void OnApplicationQuit()
@@ -140,11 +157,14 @@ public class NetworkManager : MonoBehaviour
     {
         Client.Disconnect();
         hasSentName = false;
+        connected = false;
+        hasReceiveSync = false;
     }
 
     public void DidConnect(object sender, EventArgs e)
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        connected = true;
     }
 
     private void FailedToConnect(object sender, EventArgs e)
@@ -163,6 +183,9 @@ public class NetworkManager : MonoBehaviour
         SceneManager.LoadScene(0);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        hasSentName = false;
+        connected = false;
+        hasReceiveSync = false;
     }
 
     private void SetTick(ushort serverTick)
@@ -174,10 +197,18 @@ public class NetworkManager : MonoBehaviour
         }
     }
 
+    #region Messages
+
     [MessageHandler((ushort)ServerToClientId.sync)]
     private static void Sync(Message message)
     {
         Instance.SetTick(message.GetUShort());
+
+        if (!Instance.hasReceiveSync)
+        {
+            Instance.hasReceiveSync = true;
+            GameLogic.Instance.LoadingScreen.SetActive(false);
+        }
     }
 
     public void SendName()
@@ -185,6 +216,19 @@ public class NetworkManager : MonoBehaviour
         Message message = Message.Create(MessageSendMode.Reliable, ClientToServerId.name);
         message.AddString(provisionalUsername);
 
-        NetworkManager.Instance.Client.Send(message);
+        Client.Send(message);
     }
+
+    [MessageHandler((ushort)ServerToClientId.ping)]
+    public static void Ping(Message message)
+    {
+        DateTime sent = DateTime.Parse(message.GetString(), null, System.Globalization.DateTimeStyles.RoundtripKind);
+        DateTime received = DateTime.Parse(message.GetString(), null, System.Globalization.DateTimeStyles.RoundtripKind);
+
+        TimeSpan result = received.Subtract(sent);
+
+        GameLogic.Instance.PingText.text = $"{-Math.Round(result.TotalMilliseconds)} ms";
+    }
+
+    #endregion
 }

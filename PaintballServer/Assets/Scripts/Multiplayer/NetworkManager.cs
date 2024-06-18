@@ -1,6 +1,8 @@
 using UnityEngine;
 using Riptide.Utils;
 using Riptide;
+using Riptide.Transports.Tcp;
+using System;
 
 /// <summary>
 /// The id's of the messages send from the server to the client
@@ -18,7 +20,8 @@ public enum ServerToClientId : ushort
     weaponShoot,
     reloadWeapon,
     health,
-    respawn
+    respawn,
+    ping
 }
 
 /// <summary>
@@ -32,7 +35,8 @@ public enum ClientToServerId : ushort
     switchWeapon,
     pickUpWeapon,
     dropWeapon,
-    reloadWeapon
+    reloadWeapon,
+    ping
 }
 
 public class NetworkManager : MonoBehaviour
@@ -81,7 +85,9 @@ public class NetworkManager : MonoBehaviour
         RiptideLogger.Initialize(Debug.Log, true);
 #endif
 
-        Server = new Server();
+        Server = new Server(); //for udp
+        //Server = new Server(new TcpServer()); //for tcp
+
         Server.Start(port, maxClientCount);
         Server.ClientDisconnected += PlayerLeft;
     }
@@ -114,4 +120,18 @@ public class NetworkManager : MonoBehaviour
 
         Server.SendToAll(message);
     }
+
+    #region Messages
+
+    [MessageHandler((ushort)ClientToServerId.ping)]
+    public static void Ping(ushort fromClientId, Message message)
+    {
+        Message _message = Message.Create(MessageSendMode.Unreliable, ServerToClientId.ping);
+        _message.AddString(message.GetString());
+        _message.AddString(DateTime.UtcNow.ToString("O"));
+
+        Instance.Server.Send(_message, fromClientId);
+    }
+
+    #endregion
 }

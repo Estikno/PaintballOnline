@@ -35,7 +35,10 @@ public class GameLogic : MonoBehaviour
     public GameObject LocalPlayerPrefab => localPlayerPrefab;
     public NameWeapon[] Weapons => weapons;
     public GameObject BulletImpactEffect => bulletImpactEffect;
+    public GameObject HitMarkerEffect => hitMarkerEffect;
     public TMP_Text CurrentAmmoText => currentAmmoText;
+    public GameObject LoadingScreen => loadingScreen;
+    public TMP_Text PingText => pingText;
 
     [Header("Prefabs")]
     [SerializeField] private GameObject playerPrefab;
@@ -44,9 +47,12 @@ public class GameLogic : MonoBehaviour
 
     [Header("Effects")]
     [SerializeField] private GameObject bulletImpactEffect;
+    [SerializeField] private GameObject hitMarkerEffect;
 
     [Header("UIs")]
     [SerializeField] private TMP_Text currentAmmoText;
+    [SerializeField] private GameObject loadingScreen;
+    [SerializeField] private TMP_Text pingText;
 
     private void Awake()
     {

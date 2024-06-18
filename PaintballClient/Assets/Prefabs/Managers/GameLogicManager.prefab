@@ -54,4 +54,6 @@ MonoBehaviour:
       type: 3}
   bulletImpactEffect: {fileID: 5568584061951980024, guid: 5e48b5d5bd1c7ef408c4d26e5d090017,
     type: 3}
+  hitMarkerEffect: {fileID: 153377920713225400, guid: 9fd9959ef883bf949a104e106f2de090,
+    type: 3}
   currentAmmoText: {fileID: 0}

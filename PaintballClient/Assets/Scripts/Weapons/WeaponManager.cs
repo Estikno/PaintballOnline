@@ -109,6 +109,7 @@ public class WeaponManager : MonoBehaviour
     {
         weapon.Shoot(isLocalPlayer, PlayerId);
         Instantiate(GameLogic.Instance.BulletImpactEffect, hitPoint, Quaternion.identity).transform.forward = normal;
+        Instantiate(GameLogic.Instance.HitMarkerEffect, hitPoint, Quaternion.identity).transform.forward = normal;
     }
 
     public void Reload(Weapon weapon, bool isFinished, float reloadTime, bool isLocalPlayer, ushort PlayerId)
