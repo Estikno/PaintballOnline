@@ -146,6 +146,7 @@ MonoBehaviour:
   camHolder: {fileID: 8894735316007190685}
   interpolator: {fileID: 346061368150935626}
   weaponManager: {fileID: 8381091483506511287}
+  anim: {fileID: 0}
   Head: {fileID: 0}
   weaponHolder: {fileID: 0}
   model: {fileID: 0}
@@ -190,8 +191,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcc68d4792a21ae4587816ad8fbe8187, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sensX: 400
-  sensY: 400
   camHolder: {fileID: 8894735316007190685}
 --- !u!1 &4746361974682162886
 GameObject:

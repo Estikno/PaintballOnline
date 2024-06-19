@@ -37,6 +37,16 @@ public abstract class Weapon : MonoBehaviour, IWeapon
     //variable to keep track of the fire rate
     protected float timeSinceLastShoot;
 
+    private void OnDestroy()
+    {
+        Weapons.Remove(WeaponId);
+    }
+
+    public void destroyItself()
+    {
+        Destroy(gameObject);
+    }
+
     protected virtual void Awake()
     {
         // Assign a unique weapon ID and add it to the Weapons dictionary
@@ -165,6 +175,18 @@ public abstract class Weapon : MonoBehaviour, IWeapon
         NetworkManager.Instance.Server.SendToAll(message);
     }
 
+    public void AddWeapon(ushort client_id)
+    {
+        Message message = Message.Create(MessageSendMode.Reliable, ServerToClientId.addWeapon);
+        message.AddUShort(WeaponId);
+        message.AddString(GunData.Name);
+        message.AddVector3(transform.position);
+        message.AddQuaternion(transform.rotation);
+        message.AddInt((int)gunData.Type);
+
+        NetworkManager.Instance.Server.Send(message, client_id);
+    }
+
     /// <summary>
     /// Sends a message to notify the weapon drop event
     /// </summary>
@@ -187,6 +209,15 @@ public abstract class Weapon : MonoBehaviour, IWeapon
         message.AddUShort(Manager.player.Id);
 
         NetworkManager.Instance.Server.SendToAll(message);
+    }
+
+    public void SendPickUp(ushort client_id)
+    {
+        Message message = Message.Create(MessageSendMode.Reliable, ServerToClientId.pickUpWeapon);
+        message.AddUShort(WeaponId);
+        message.AddUShort(Manager.player.Id);
+
+        NetworkManager.Instance.Server.Send(message, client_id);
     }
 
     /// <summary>

@@ -89,7 +89,7 @@ public class NetworkManager : MonoBehaviour
 
     [Space(10)]
 
-    [SerializeField] private ushort tickDivergeTolerance = 1;
+    [SerializeField] private ushort tickDivergeTolerance = 2;
 
     //other
     private string provisionalUsername;
@@ -133,7 +133,7 @@ public class NetworkManager : MonoBehaviour
         }
 
         //ping
-        if (connected && ServerTick % 5 == 0)
+        if (connected && ServerTick % 15 == 0)
         {
             Message message = Message.Create(MessageSendMode.Unreliable, ClientToServerId.ping);
             message.AddString(DateTime.UtcNow.ToString("O"));
@@ -227,7 +227,7 @@ public class NetworkManager : MonoBehaviour
 
         TimeSpan result = received.Subtract(sent);
 
-        GameLogic.Instance.PingText.text = $"{-Math.Round(result.TotalMilliseconds)} ms";
+        GameLogic.Instance.PingText.text = $"{Math.Abs(Math.Round(result.TotalMilliseconds))} ms";
     }
 
     #endregion

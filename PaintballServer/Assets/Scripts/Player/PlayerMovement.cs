@@ -237,8 +237,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void SendMovement()
     {
-        if (NetworkManager.Instance.CurrentTick % 2 != 0)
-            return;
+        /*if (NetworkManager.Instance.CurrentTick % 2 != 0)
+            return;*/
 
         Message message = Message.Create(MessageSendMode.Unreliable, ServerToClientId.playerMovement);
         message.AddUShort(player.Id);

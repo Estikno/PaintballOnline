@@ -110,7 +110,10 @@ public class NetworkManager : MonoBehaviour
     private void PlayerLeft(object sender, ServerDisconnectedEventArgs e)
     {
         if (Player.list.TryGetValue(e.Client.Id, out Player player))
+        {
+            player.WeaponManager.weapons[0].destroyItself();
             Destroy(player.transform.parent.gameObject);
+        }
     }
 
     private void SendSync()

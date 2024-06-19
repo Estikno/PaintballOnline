@@ -26,10 +26,20 @@ public class Player : MonoBehaviour
 
     public static void Spawn(ushort id, string username)
     {
+        //send other players infor
         foreach (Player otherPlayer in list.Values)
             otherPlayer.SendSpawned(id);
 
-        Player player = Instantiate(GameLogic.Instance.PlayerPrefab, new Vector3(4.82f, .35f, 3.58f), Quaternion.identity).GetComponentInChildren<Player>();
+        //send other guns info
+        foreach (Weapon weapon in Weapon.Weapons.Values)
+        {
+            weapon.AddWeapon(id);
+            weapon.SendPickUp(id);
+        }
+
+        Vector3 positionToSpawn = GameLogic.Instance.RespawnPoints[Random.Range(0, GameLogic.Instance.RespawnPoints.Length)].position;
+
+        Player player = Instantiate(GameLogic.Instance.PlayerPrefab, positionToSpawn, Quaternion.identity).GetComponentInChildren<Player>();
         player.name = $"Player {id} ({(string.IsNullOrEmpty(username) ? "Guest" : username)})";
         player.Id = id;
         player.Username = string.IsNullOrEmpty(username) ? "Guest" : username;

@@ -24,7 +24,7 @@ public class WeaponManager : MonoBehaviour
 
     private void Start()
     {
-        Invoke(nameof(pick), 10f);
+        Invoke(nameof(pick), 2f);
     }
 
     private void pick()

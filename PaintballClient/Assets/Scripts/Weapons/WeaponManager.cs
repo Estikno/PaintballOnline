@@ -10,7 +10,7 @@ public class WeaponManager : MonoBehaviour
 {
     [HideInInspector]
     public Weapon[] Weapons { get; private set; } = new Weapon[1]; //The weapons in your inventory
-    public int SelectedWeapon { get; private set; } = 2; //The selected weapon in your inventory
+    public int SelectedWeapon { get; private set; } = 0; //The selected weapon in your inventory
 
     [SerializeField] private Transform weaponHolder;
     [SerializeField] private WeaponFingerValues weaponFingerValues;

@@ -39,4 +39,6 @@ public interface IWeapon
     /// It reloads the weapon
     /// </summary>
     public void Reload();
+
+    public void destroyItself();
 }
