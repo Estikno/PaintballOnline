@@ -37,16 +37,9 @@ public class PlayerController : MonoBehaviour
 
     private Queue<KeyCode> otherInputs = new Queue<KeyCode>();
 
-    private void OnDestroy()
-    {
-        NetworkManager.Instance.TickUpdate -= TickInput;
-    }
-
     private void Start()
     {
         inputs = new bool[6];
-
-        NetworkManager.Instance.TickUpdate += TickInput;
     }
 
     private void Update()
@@ -78,7 +71,7 @@ public class PlayerController : MonoBehaviour
             otherInputs.Enqueue(KeyCode.R);
     }
 
-    private void TickInput(object sender, EventArgs e)
+    private void FixedUpdate()
     {
         SendInput();
 

@@ -59,8 +59,6 @@ public class NetworkManager : MonoBehaviour
     [SerializeField] private ushort port;
     [SerializeField] private ushort maxClientCount;
 
-    public event EventHandler TickUpdate;
-
     private void Awake()
     {
         Instance = this;
@@ -89,8 +87,6 @@ public class NetworkManager : MonoBehaviour
     private void FixedUpdate()
     {
         Server.Update();
-
-        TickUpdate?.Invoke(this, EventArgs.Empty);
 
         if (CurrentTick % 200 == 0)
             SendSync();

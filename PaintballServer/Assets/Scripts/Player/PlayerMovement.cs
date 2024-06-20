@@ -58,12 +58,6 @@ public class PlayerMovement : MonoBehaviour
         air
     }
 
-    private void OnDestroy()
-    {
-        NetworkManager.Instance.TickUpdate -= MyInput;
-        NetworkManager.Instance.TickUpdate -= MovePlayer;
-    }
-
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -72,9 +66,6 @@ public class PlayerMovement : MonoBehaviour
         readyToJump = true;
 
         inputs = new bool[6];
-
-        NetworkManager.Instance.TickUpdate += MyInput;
-        NetworkManager.Instance.TickUpdate += MovePlayer;
     }
 
     private void Update()
@@ -91,13 +82,13 @@ public class PlayerMovement : MonoBehaviour
             rb.drag = airDrag;
     }
 
-    /*private void FixedUpdate()
+    private void FixedUpdate()
     {
         MyInput();
         MovePlayer();
-    }*/
+    }
 
-    private void MyInput(object sender, EventArgs e)
+    private void MyInput()
     {
         if (inputs[0])
             verticalInput = 1f;
@@ -124,7 +115,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void MovePlayer(object sender, EventArgs e)
+    private void MovePlayer()
     {
         //calculate movement direction
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
@@ -247,8 +238,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void SendMovement()
     {
-        /*if (NetworkManager.Instance.CurrentTick % 2 != 0)
-            return;*/
+        if (NetworkManager.Instance.CurrentTick % 2 != 0)
+            return;
 
         Message message = Message.Create(MessageSendMode.Unreliable, ServerToClientId.playerMovement);
         message.AddUShort(player.Id);

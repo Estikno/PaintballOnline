@@ -81,15 +81,13 @@ public class NetworkManager : MonoBehaviour
 
     [Space(10)]
 
-    [SerializeField] private ushort tickDivergeTolerance = 2;
+    [SerializeField] private ushort tickDivergeTolerance = 5;
 
     //other
     private string provisionalUsername;
     private bool hasSentName = false;
     private bool hasReceiveSync = false;
     private bool connected = false;
-
-    public event EventHandler TickUpdate;
 
     private void Awake()
     {
@@ -117,8 +115,6 @@ public class NetworkManager : MonoBehaviour
     private void FixedUpdate()
     {
         Client.Update();
-
-        TickUpdate?.Invoke(this, EventArgs.Empty);
 
         if (SceneManager.GetActiveScene().name != "Menu" && !hasSentName)
         {
