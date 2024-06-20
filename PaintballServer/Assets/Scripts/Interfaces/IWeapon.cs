@@ -31,6 +31,12 @@ public interface IWeapon
     public void SetSelection(bool select);
 
     /// <summary>
+    /// Sets if the weapon is selected
+    /// </summary>
+    /// <param name="select">The selected state</param>
+    public void SetSelection(bool select, ushort client_id);
+
+    /// <summary>
     /// It shoots the weapon
     /// </summary>
     public void Shoot();

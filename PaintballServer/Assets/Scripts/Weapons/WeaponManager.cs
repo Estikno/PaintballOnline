@@ -155,4 +155,16 @@ public class WeaponManager : MonoBehaviour
             weapons[_weapon].SetSelection(true);
         }
     }
+
+    public void SetSelectedWeapon(int _weapon, ushort client_id)
+    {
+        if (weapons[SelectedWeapon] != null)
+            weapons[SelectedWeapon].SetSelection(false, client_id);
+
+        if (weapons[_weapon] != null)
+        {
+            SelectedWeapon = _weapon;
+            weapons[_weapon].SetSelection(true, client_id);
+        }
+    }
 }

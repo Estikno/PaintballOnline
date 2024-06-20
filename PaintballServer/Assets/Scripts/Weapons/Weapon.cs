@@ -160,6 +160,17 @@ public abstract class Weapon : MonoBehaviour, IWeapon
         NetworkManager.Instance.Server.SendToAll(message);
     }
 
+    public void SetSelection(bool select, ushort client_id)
+    {
+        Message message = Message.Create(MessageSendMode.Reliable, ServerToClientId.selectedWeapon);
+        message.AddUShort(WeaponId);
+        message.AddBool(select);
+        message.AddUShort(Manager.player.Id);
+        message.AddInt(Helper.GetGunIndexWithType(gunData.Type));
+
+        NetworkManager.Instance.Server.Send(message, client_id);
+    }
+
     /// <summary>
     /// Sends a message to add the weapon to the game
     /// </summary>

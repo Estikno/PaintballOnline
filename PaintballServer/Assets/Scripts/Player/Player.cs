@@ -30,13 +30,6 @@ public class Player : MonoBehaviour
         foreach (Player otherPlayer in list.Values)
             otherPlayer.SendSpawned(id);
 
-        //send other guns info
-        foreach (Weapon weapon in Weapon.Weapons.Values)
-        {
-            weapon.AddWeapon(id);
-            weapon.SendPickUp(id);
-        }
-
         Vector3 positionToSpawn = GameLogic.Instance.RespawnPoints[Random.Range(0, GameLogic.Instance.RespawnPoints.Length)].position;
 
         Player player = Instantiate(GameLogic.Instance.PlayerPrefab, positionToSpawn, Quaternion.identity).GetComponentInChildren<Player>();
@@ -46,6 +39,15 @@ public class Player : MonoBehaviour
 
         player.SendSpawned();
         list.Add(id, player);
+
+        //send other guns info
+        foreach (Weapon weapon in Weapon.Weapons.Values)
+        {
+            weapon.AddWeapon(id);
+            weapon.SendPickUp(id);
+        }
+
+        player.weaponManager.SetSelectedWeapon(Helper.GetGunIndexWithType(GunType.rifle), id);
     }
 
     public void Damage(int damage)
