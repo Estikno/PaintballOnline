@@ -77,6 +77,7 @@ public class Player : MonoBehaviour
         player.name = $"Player {id} ({(string.IsNullOrEmpty(username) ? "Guest" : username)})";
         player.Id = id;
         player.username = username;
+        player.weaponManager.PickUp(player.IsLocal, player.Id);
 
         list.Add(id, player);
     }

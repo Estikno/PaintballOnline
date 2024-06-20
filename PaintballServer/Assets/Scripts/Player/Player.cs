@@ -36,18 +36,10 @@ public class Player : MonoBehaviour
         player.name = $"Player {id} ({(string.IsNullOrEmpty(username) ? "Guest" : username)})";
         player.Id = id;
         player.Username = string.IsNullOrEmpty(username) ? "Guest" : username;
+        player.weaponManager.pick();
 
         player.SendSpawned();
         list.Add(id, player);
-
-        //send other guns info
-        foreach (Weapon weapon in Weapon.Weapons.Values)
-        {
-            weapon.AddWeapon(id);
-            weapon.SendPickUp(id);
-        }
-
-        player.weaponManager.SetSelectedWeapon(Helper.GetGunIndexWithType(GunType.rifle), id);
     }
 
     public void Damage(int damage)

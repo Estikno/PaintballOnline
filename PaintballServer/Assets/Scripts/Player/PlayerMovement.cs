@@ -1,4 +1,5 @@
 using Riptide;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -57,6 +58,12 @@ public class PlayerMovement : MonoBehaviour
         air
     }
 
+    private void OnDestroy()
+    {
+        NetworkManager.Instance.TickUpdate -= MyInput;
+        NetworkManager.Instance.TickUpdate -= MovePlayer;
+    }
+
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -65,6 +72,9 @@ public class PlayerMovement : MonoBehaviour
         readyToJump = true;
 
         inputs = new bool[6];
+
+        NetworkManager.Instance.TickUpdate += MyInput;
+        NetworkManager.Instance.TickUpdate += MovePlayer;
     }
 
     private void Update()
@@ -81,13 +91,13 @@ public class PlayerMovement : MonoBehaviour
             rb.drag = airDrag;
     }
 
-    private void FixedUpdate()
+    /*private void FixedUpdate()
     {
         MyInput();
         MovePlayer();
-    }
+    }*/
 
-    private void MyInput()
+    private void MyInput(object sender, EventArgs e)
     {
         if (inputs[0])
             verticalInput = 1f;
@@ -114,7 +124,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void MovePlayer()
+    private void MovePlayer(object sender, EventArgs e)
     {
         //calculate movement direction
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;

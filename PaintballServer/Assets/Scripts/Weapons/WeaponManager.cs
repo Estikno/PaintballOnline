@@ -14,7 +14,7 @@ public class WeaponManager : MonoBehaviour
     [SerializeField] private float pickUpRange;
     [SerializeField] private float pickUpRadius;
 
-    public IWeapon[] weapons { get; private set; } = new IWeapon[1];
+    public IWeapon weapon { get; private set; }
 
     public int SelectedWeapon { get; private set; } = 0;
 
@@ -22,16 +22,11 @@ public class WeaponManager : MonoBehaviour
     /*public GameObject glock;
     public GameObject knife;*/
 
-    private void Start()
+    public void pick()
     {
-        Invoke(nameof(pick), 2f);
-    }
-
-    private void pick()
-    {
-        IWeapon weapon = Instantiate(basicGun, new Vector3(0f, 1f, 0f), Quaternion.identity).GetComponent<IWeapon>();
-        weapon.PickUp(transform, camHolder);
-        weapons[0] = weapon;
+        IWeapon _weapon = Instantiate(basicGun, new Vector3(0f, 1f, 0f), Quaternion.identity).GetComponent<IWeapon>();
+        _weapon.PickUp(transform, camHolder, player.Id);
+        weapon = _weapon;
 
         /*IWeapon _weapon = Instantiate(ak, new Vector3(0f, 1f, 0f), Quaternion.identity).GetComponent<IWeapon>();
         _weapon.PickUp(transform, CameraHolder);
@@ -40,65 +35,16 @@ public class WeaponManager : MonoBehaviour
         IWeapon weapon2 = Instantiate(knife, new Vector3(0f, 1f, 0f), Quaternion.identity).GetComponent<IWeapon>();
         weapon2.PickUp(transform, CameraHolder);
         weapons[2] = weapon2;*/
-
-        SetSelectedWeapon(Helper.GetGunIndexWithType(GunType.rifle));
     }
 
     public void PrimaryUsePressed()
     {
-        if (weapons[SelectedWeapon] != null)
-            weapons[SelectedWeapon].Shoot();
-    }
-
-    public void DropWeapon()
-    {
-        if (weapons[SelectedWeapon] == null)
-            return;
-
-        if (weapons[SelectedWeapon].GunData.Type == GunType.knife)
-            return;
-
-        weapons[SelectedWeapon].Drop();
-        weapons[SelectedWeapon] = null;
-
-        SetSelectedWeapon(Helper.GetGunIndexWithType(GunType.rifle));
-    }
-
-    public void PickWeapon()
-    {
-        IWeapon weaponToPick = GetPickUpWeapon();
-
-        if (weaponToPick == null)
-            return;
-
-        GunType weaponType = weaponToPick.GunData.Type;
-
-        if (weapons[(int)weaponType] != null)
-        {
-            weapons[(int)weaponType].Drop();
-            weaponToPick.PickUp(transform, camHolder);
-        }
-        else
-        {
-            weaponToPick.PickUp(transform, camHolder);
-        }
-
-        weapons[Helper.GetGunIndexWithType(weaponType)] = weaponToPick;
-        SetSelectedWeapon(Helper.GetGunIndexWithType(weaponType));
-    }
-
-    public void SwitchWeapon(int _switch)
-    {
-        if (weapons[_switch] == null)
-            return;
-
-        SetSelectedWeapon(_switch);
+        weapon.Shoot();
     }
 
     public void ReloadWeapon()
     {
-        if (weapons[(int)SelectedWeapon] != null)
-            weapons[(int)SelectedWeapon].Reload();
+        weapon.Reload();
     }
 
     private IWeapon GetPickUpWeapon()
@@ -142,29 +88,5 @@ public class WeaponManager : MonoBehaviour
     private float getDistance(RaycastHit hit)
     {
         return Vector3.Distance(camHolder.position, hit.point == Vector3.zero ? hit.transform.position : hit.point);
-    }
-
-    private void SetSelectedWeapon(int _weapon)
-    {
-        if (weapons[SelectedWeapon] != null)
-            weapons[SelectedWeapon].SetSelection(false);
-
-        if (weapons[_weapon] != null)
-        {
-            SelectedWeapon = _weapon;
-            weapons[_weapon].SetSelection(true);
-        }
-    }
-
-    public void SetSelectedWeapon(int _weapon, ushort client_id)
-    {
-        if (weapons[SelectedWeapon] != null)
-            weapons[SelectedWeapon].SetSelection(false, client_id);
-
-        if (weapons[_weapon] != null)
-        {
-            SelectedWeapon = _weapon;
-            weapons[_weapon].SetSelection(true, client_id);
-        }
     }
 }

@@ -14,11 +14,6 @@ public enum ServerToClientId : ushort
     sync = 1,
     playerSpawned,
     playerMovement,
-    selectedWeapon,
-    addWeapon,
-    pickUpWeapon,
-    dropWeapon,
-    weaponMovement,
     weaponShoot,
     reloadWeapon,
     health,
@@ -34,11 +29,8 @@ public enum ClientToServerId : ushort
     name = 1,
     input,
     primaryUse,
-    switchWeapon,
-    pickUpWeapon,
-    dropWeapon,
     reloadWeapon,
-    ping
+    ping,
 }
 
 public class NetworkManager : MonoBehaviour
@@ -97,6 +89,8 @@ public class NetworkManager : MonoBehaviour
     private bool hasReceiveSync = false;
     private bool connected = false;
 
+    public event EventHandler TickUpdate;
+
     private void Awake()
     {
         Instance = this;
@@ -123,7 +117,8 @@ public class NetworkManager : MonoBehaviour
     private void FixedUpdate()
     {
         Client.Update();
-        ServerTick++;
+
+        TickUpdate?.Invoke(this, EventArgs.Empty);
 
         if (SceneManager.GetActiveScene().name != "Menu" && !hasSentName)
         {
@@ -140,6 +135,8 @@ public class NetworkManager : MonoBehaviour
 
             Client.Send(message);
         }
+
+        ServerTick++;
     }
 
     private void OnApplicationQuit()

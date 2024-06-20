@@ -26,8 +26,6 @@ public class Gun : Weapon
 
     public override void Reload()
     {
-        base.Reload();
-
         //excecute if is no realoading, if is held, selected and the ammo is smaller than the mag size
         if (!reloading && currentAmmo != GunData.MagSize)
         {
@@ -51,9 +49,6 @@ public class Gun : Weapon
         //set the reloading to false
         reloading = false;
 
-        //Exit if the weapon is not selected nor held
-        if (!Held || !Selected) yield break;
-
         //Send reload message
         SendReload(true);
 
@@ -63,7 +58,7 @@ public class Gun : Weapon
 
 
     //this method verifies if we can shoot
-    private bool canShoot() => !reloading && Held && Selected && timeSinceLastShoot > 1f / (GunData.FireRate / 60f) && currentAmmo > 0;
+    private bool canShoot() => !reloading && timeSinceLastShoot > 1f / (GunData.FireRate / 60f) && currentAmmo > 0;
 
     public override void Shoot()
     {
@@ -115,7 +110,6 @@ public class Gun : Weapon
     private void SendShoot(Vector3 hitPoint, Vector3 normal)
     {
         Message message = Message.Create(MessageSendMode.Reliable, ServerToClientId.weaponShoot);
-        message.AddUShort(WeaponId);
         message.AddUShort(Manager.player.Id);
         message.AddBool(true);
         message.AddVector3(hitPoint);
@@ -127,7 +121,6 @@ public class Gun : Weapon
     private void SendShoot()
     {
         Message message = Message.Create(MessageSendMode.Reliable, ServerToClientId.weaponShoot);
-        message.AddUShort(WeaponId);
         message.AddUShort(Manager.player.Id);
         message.AddBool(false);
 
@@ -138,7 +131,6 @@ public class Gun : Weapon
     private void SendReload(bool isFinished)
     {
         Message message = Message.Create(MessageSendMode.Reliable, ServerToClientId.reloadWeapon);
-        message.AddUShort(WeaponId);
         message.AddUShort(Manager.player.Id);
         message.AddBool(isFinished);
         message.AddFloat(GunData.ReloadTime);

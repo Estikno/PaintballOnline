@@ -103,7 +103,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4124399286599391546}
   - component: {fileID: 7166523765459588770}
-  - component: {fileID: 9040656659257005155}
   - component: {fileID: 8380474907001913550}
   m_Layer: 0
   m_Name: PaintballGun
@@ -150,29 +149,12 @@ MonoBehaviour:
   weaponSway: {fileID: 8380474907001913550}
   camShakeMagnitude: 0.055
   camShakeDuration: 0.05
-  Held: 0
   Holder: 0
   kickBackForce: 0.075
   rightHand: {fileID: 3310531408754647163}
   leftHand: {fileID: 4661665422156229525}
   poleRight: {fileID: 590438669852668167}
   poleLeft: {fileID: 9201522665038218788}
---- !u!114 &9040656659257005155
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4573064340581062179}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b6130e39ca1770c48bd26469ac952a5e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  IsRotationNeeded: 1
-  timeElapsed: 0
-  timeToReachTarget: 0.05
-  movementThreshold: 0.05
 --- !u!114 &8380474907001913550
 MonoBehaviour:
   m_ObjectHideFlags: 0

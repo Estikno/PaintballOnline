@@ -17,24 +17,7 @@ public interface IWeapon
     /// </summary>
     /// <param name="weaponHolder">The weapon holder transform to attach the weapon</param>
     /// <param name="camp">The camera holder transform</param>
-    public void PickUp(Transform weaponHolder, Transform camp);
-
-    /// <summary>
-    /// Drops the weapon
-    /// </summary>
-    public void Drop();
-
-    /// <summary>
-    /// Sets if the weapon is selected
-    /// </summary>
-    /// <param name="select">The selected state</param>
-    public void SetSelection(bool select);
-
-    /// <summary>
-    /// Sets if the weapon is selected
-    /// </summary>
-    /// <param name="select">The selected state</param>
-    public void SetSelection(bool select, ushort client_id);
+    public void PickUp(Transform weaponHolder, Transform camp, ushort player_id);
 
     /// <summary>
     /// It shoots the weapon

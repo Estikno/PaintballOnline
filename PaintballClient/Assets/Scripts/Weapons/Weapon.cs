@@ -19,7 +19,6 @@ public enum GunType
 /// <summary>
 /// This is the weapon class that every weapon has to contain
 /// </summary>
-[RequireComponent(typeof(Interpolator))]
 public class Weapon : MonoBehaviour
 {
     /// <summary>
@@ -40,8 +39,6 @@ public class Weapon : MonoBehaviour
     //Weapons properties
     public ushort WeaponId { get; private set; }
     public string Name { get; private set; }
-    [HideInInspector]
-    public bool Held;
     public GunType GunType { get; private set; }
     public ushort Holder;
 
@@ -62,15 +59,7 @@ public class Weapon : MonoBehaviour
     public Transform PoleRight => poleRight;
     public Transform PoleLeft => poleLeft;
 
-    public Interpolator interpolator { get; private set; }
-
     private bool reloading;
-
-    private void Awake()
-    {
-        //anim = GetComponent<Animator>();
-        interpolator = GetComponent<Interpolator>();
-    }
 
     public void Shoot(bool isLocalPlayer, ushort PlayerId)
     {
@@ -176,9 +165,6 @@ public class Weapon : MonoBehaviour
         weapon.WeaponId = id;
         weapon.Name = name;
         weapon.GunType = (GunType)type;
-
-        //Lastly, adds this weapon to the weapons list
-        Weapons.Add(id, weapon);
     }
 
     /// <summary>
@@ -194,16 +180,9 @@ public class Weapon : MonoBehaviour
         GameLogic.Instance.CurrentAmmoText.text = text;
     }
 
-    #region Messages
-
-    [MessageHandler((ushort)ServerToClientId.weaponMovement)]
-    private static void WeaponMovement(Message message)
+    public void AddId(ushort id)
     {
-        if (Weapon.Weapons.TryGetValue(message.GetUShort(), out Weapon weapon))
-        {
-            weapon.interpolator.NewUpdate(message.GetUShort(), message.GetVector3(), message.GetQuaternion());
-        }
+        //Lastly, adds this weapon to the weapons list
+        Weapons.Add(id, this);
     }
-
-    #endregion
 }

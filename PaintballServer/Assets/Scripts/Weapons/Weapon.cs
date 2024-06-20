@@ -8,13 +8,9 @@ public abstract class Weapon : MonoBehaviour, IWeapon
 {
     // Dictionary to store all weapons in the game
     public static Dictionary<ushort, Weapon> Weapons = new Dictionary<ushort, Weapon>();
-    // ID for the next weapon
-    public static ushort NextWeapon = 1;
 
     //Basic properties of the weapon
     public ushort WeaponId { get; private set; } = 0;
-    public bool Held { get; private set; } = false;
-    public bool Selected { get; private set; } = false;
     public WeaponManager Manager { get; private set; }
 
     [Header("References")]
@@ -49,13 +45,7 @@ public abstract class Weapon : MonoBehaviour, IWeapon
 
     protected virtual void Awake()
     {
-        // Assign a unique weapon ID and add it to the Weapons dictionary
-        WeaponId = NextWeapon;
-        NextWeapon++;
-        Weapons.Add(WeaponId, this);
-
-        //Send message to the client informing about the new weapon
-        AddWeapon();
+        
     }
 
     protected virtual void Update()
@@ -64,12 +54,12 @@ public abstract class Weapon : MonoBehaviour, IWeapon
         timeSinceLastShoot += Time.deltaTime;
     }
 
-    private void FixedUpdate()
+    /*private void FixedUpdate()
     {
         //Send the weapon movement if it's not held by any player
         if (!Held)
             SendMovement();
-    }
+    }*/
 
     public virtual void Shoot()
     {
@@ -81,11 +71,13 @@ public abstract class Weapon : MonoBehaviour, IWeapon
 
     }
 
-    public virtual void PickUp(Transform weaponHolder, Transform camp)
+    public virtual void PickUp(Transform weaponHolder, Transform camp, ushort player_id)
     {
+        WeaponId = player_id;
+        Weapons.Add(player_id, this);
+
         //Assign some variables
         cam = camp;
-        Held = true;
 
         //Destroy the rigidbody as it would not be necessary for now
         if (rb != null)
@@ -104,146 +96,5 @@ public abstract class Weapon : MonoBehaviour, IWeapon
 
         //Set the manager variable
         Manager = GetComponentInParent<WeaponManager>();
-
-        //Send the pick up state to the clients
-        SendPickUp();
     }
-
-    public virtual void Drop()
-    {
-        //Assing some variables
-        Held = false;
-        Selected = false;
-
-        //Create new rigidbody
-        rb = gameObject.AddComponent<Rigidbody>();
-        rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
-        rb.mass = .1f;
-
-        //Throws the gun
-        Vector3 forward = cam.forward;
-        forward.y = 0f;
-        rb.velocity = forward * throwForce;
-        rb.velocity += Vector3.up * throwExtraForce;
-        rb.angularVelocity = Random.onUnitSphere * rotationForce;
-
-        //enable colliders and objects
-        foreach (Collider col in Colliders)
-        {
-            col.enabled = true;
-        }
-        transform.SetParent(null);
-
-        //Send the drop state to the clients
-        SendDrop();
-
-        //Set the manager to null
-        Manager = null;
-    }
-
-    #region Messages
-
-    /// <summary>
-    /// Sends a message to update the weapon selection status
-    /// </summary>
-    /// <param name="select">The weapon selected status</param>
-    public void SetSelection(bool select)
-    {
-        Selected = select;
-
-        Message message = Message.Create(MessageSendMode.Reliable, ServerToClientId.selectedWeapon);
-        message.AddUShort(WeaponId);
-        message.AddBool(select);
-        message.AddUShort(Manager.player.Id);
-        message.AddInt(Helper.GetGunIndexWithType(gunData.Type));
-
-        NetworkManager.Instance.Server.SendToAll(message);
-    }
-
-    public void SetSelection(bool select, ushort client_id)
-    {
-        Message message = Message.Create(MessageSendMode.Reliable, ServerToClientId.selectedWeapon);
-        message.AddUShort(WeaponId);
-        message.AddBool(select);
-        message.AddUShort(Manager.player.Id);
-        message.AddInt(Helper.GetGunIndexWithType(gunData.Type));
-
-        NetworkManager.Instance.Server.Send(message, client_id);
-    }
-
-    /// <summary>
-    /// Sends a message to add the weapon to the game
-    /// </summary>
-    private void AddWeapon()
-    {
-        Message message = Message.Create(MessageSendMode.Reliable, ServerToClientId.addWeapon);
-        message.AddUShort(WeaponId);
-        message.AddString(GunData.Name);
-        message.AddVector3(transform.position);
-        message.AddQuaternion(transform.rotation);
-        message.AddInt((int)gunData.Type);
-
-        NetworkManager.Instance.Server.SendToAll(message);
-    }
-
-    public void AddWeapon(ushort client_id)
-    {
-        Message message = Message.Create(MessageSendMode.Reliable, ServerToClientId.addWeapon);
-        message.AddUShort(WeaponId);
-        message.AddString(GunData.Name);
-        message.AddVector3(transform.position);
-        message.AddQuaternion(transform.rotation);
-        message.AddInt((int)gunData.Type);
-
-        NetworkManager.Instance.Server.Send(message, client_id);
-    }
-
-    /// <summary>
-    /// Sends a message to notify the weapon drop event
-    /// </summary>
-    private void SendDrop()
-    {
-        Message message = Message.Create(MessageSendMode.Reliable, ServerToClientId.dropWeapon);
-        message.AddUShort(WeaponId);
-        message.AddUShort(Manager.player.Id);
-
-        NetworkManager.Instance.Server.SendToAll(message);
-    }
-
-    /// <summary>
-    /// Sends a message to notify the weapon pickup event
-    /// </summary>
-    private void SendPickUp()
-    {
-        Message message = Message.Create(MessageSendMode.Reliable, ServerToClientId.pickUpWeapon);
-        message.AddUShort(WeaponId);
-        message.AddUShort(Manager.player.Id);
-
-        NetworkManager.Instance.Server.SendToAll(message);
-    }
-
-    public void SendPickUp(ushort client_id)
-    {
-        Message message = Message.Create(MessageSendMode.Reliable, ServerToClientId.pickUpWeapon);
-        message.AddUShort(WeaponId);
-        message.AddUShort(Manager.player.Id);
-
-        NetworkManager.Instance.Server.Send(message, client_id);
-    }
-
-    /// <summary>
-    /// Sends the weapon movement of the gun
-    /// </summary>
-    private void SendMovement()
-    {
-        Message message = Message.Create(MessageSendMode.Unreliable, ServerToClientId.weaponMovement);
-        message.AddUShort(WeaponId);
-        message.AddUShort(NetworkManager.Instance.CurrentTick);
-        message.AddVector3(transform.position);
-        message.AddQuaternion(transform.rotation);
-
-        NetworkManager.Instance.Server.SendToAll(message);
-    }
-
-    #endregion
 }

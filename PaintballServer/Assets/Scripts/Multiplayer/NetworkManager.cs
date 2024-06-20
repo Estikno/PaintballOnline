@@ -12,11 +12,6 @@ public enum ServerToClientId : ushort
     sync = 1,
     playerSpawned,
     playerMovement,
-    selectedWeapon,
-    addWeapon,
-    pickUpWeapon,
-    dropWeapon,
-    weaponMovement,
     weaponShoot,
     reloadWeapon,
     health,
@@ -32,11 +27,8 @@ public enum ClientToServerId : ushort
     name = 1,
     input,
     primaryUse,
-    switchWeapon,
-    pickUpWeapon,
-    dropWeapon,
     reloadWeapon,
-    ping
+    ping,
 }
 
 public class NetworkManager : MonoBehaviour
@@ -67,6 +59,8 @@ public class NetworkManager : MonoBehaviour
     [SerializeField] private ushort port;
     [SerializeField] private ushort maxClientCount;
 
+    public event EventHandler TickUpdate;
+
     private void Awake()
     {
         Instance = this;
@@ -74,7 +68,7 @@ public class NetworkManager : MonoBehaviour
 
     private void Start()
     {
-        Application.targetFrameRate = 60;
+        Application.targetFrameRate = 80;
 
 #if UNITY_EDITOR
         RiptideLogger.Initialize(Debug.Log, Debug.Log, Debug.LogWarning, Debug.LogError, false);
@@ -96,6 +90,8 @@ public class NetworkManager : MonoBehaviour
     {
         Server.Update();
 
+        TickUpdate?.Invoke(this, EventArgs.Empty);
+
         if (CurrentTick % 200 == 0)
             SendSync();
 
@@ -111,7 +107,7 @@ public class NetworkManager : MonoBehaviour
     {
         if (Player.list.TryGetValue(e.Client.Id, out Player player))
         {
-            player.WeaponManager.weapons[0].destroyItself();
+            player.WeaponManager.weapon.destroyItself();
             Destroy(player.transform.parent.gameObject);
         }
     }

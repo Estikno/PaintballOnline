@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Riptide;
+using System;
 
 public class PlayerController : MonoBehaviour
 {
@@ -36,9 +37,16 @@ public class PlayerController : MonoBehaviour
 
     private Queue<KeyCode> otherInputs = new Queue<KeyCode>();
 
+    private void OnDestroy()
+    {
+        NetworkManager.Instance.TickUpdate -= TickInput;
+    }
+
     private void Start()
     {
         inputs = new bool[6];
+
+        NetworkManager.Instance.TickUpdate += TickInput;
     }
 
     private void Update()
@@ -57,8 +65,8 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKey(KeyCode.D))
             inputs[3] = true;
 
-        if (Input.GetKey(KeyCode.Space))
-            inputs[4] = true;
+        /*if (Input.GetKey(KeyCode.Space))
+            inputs[4] = true;*/
 
         if (Input.GetKey(KeyCode.LeftShift))
             inputs[5] = true;
@@ -66,26 +74,11 @@ public class PlayerController : MonoBehaviour
         if (Input.GetMouseButton(0))
             otherInputs.Enqueue(KeyCode.Mouse0);
 
-        /*if (Input.GetKeyDown(KeyCode.G))
-            otherInputs.Enqueue(KeyCode.G);*/
-
-        /*if (Input.GetKeyDown(KeyCode.E))
-            otherInputs.Enqueue(KeyCode.E);*/
-
         if (Input.GetKeyDown(KeyCode.R))
             otherInputs.Enqueue(KeyCode.R);
-
-        /*if (Input.GetKeyDown(KeyCode.Alpha1))
-            otherInputs.Enqueue(KeyCode.Alpha1);
-
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-            otherInputs.Enqueue(KeyCode.Alpha2);
-
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-            otherInputs.Enqueue(KeyCode.Alpha3);*/
     }
 
-    private void FixedUpdate()
+    private void TickInput(object sender, EventArgs e)
     {
         SendInput();
 
@@ -98,24 +91,9 @@ public class PlayerController : MonoBehaviour
                     case KeyCode.Mouse0:
                         SendPrimaryUse();
                         break;
-                    /*case KeyCode.G:
-                        SendDrop();
-                        break;
-                    case KeyCode.E:
-                        SendPickUp();
-                        break;*/
                     case KeyCode.R:
                         SendReload();
                         break;
-                    /*case KeyCode.Alpha1:
-                        SendSwitchWeapon(0);
-                        break;
-                    case KeyCode.Alpha2:
-                        SendSwitchWeapon(1);
-                        break;
-                    case KeyCode.Alpha3:
-                        SendSwitchWeapon(2);
-                        break;*/
                 }
             }
         }
