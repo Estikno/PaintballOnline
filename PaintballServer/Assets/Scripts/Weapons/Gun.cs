@@ -64,36 +64,9 @@ public class Gun : Weapon
     {
         if (canShoot())
         {
-            //traces a raycast to see with what collides the shot
-            /*RaycastHit[] hitsInfo = Physics.RaycastAll(cam.position, cam.forward, GunData.MaxDistance, whatToHit);
-
-            foreach (RaycastHit hitInfo in hitsInfo)
-            {
-                print(hitInfo.transform.name);
-            }
-
-            if (hitsInfo.Length > 1)
-            {
-                Player player = hitsInfo[1].transform.GetComponentInParent<Player>();
-                
-                if (player != null)
-                {
-                    //damage the player
-                    player.Damage(GunData.Damage);
-                }
-
-                //sends the shot
-                SendShoot(hitsInfo[1].point, hitsInfo[1].normal);
-            }
-            else
-            {
-                SendShoot();
-            }*/
-
-            
             if (Physics.Raycast(cam.position, cam.forward, out RaycastHit hitInfo, GunData.MaxDistance, whatToHit))
             {
-                print(hitInfo.transform.name);
+                //print(hitInfo.transform.name);
                 //damage the player
                 Player player = hitInfo.transform.GetComponentInParent<Player>();
 
