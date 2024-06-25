@@ -220,7 +220,7 @@ public class NetworkManager : MonoBehaviour
 
         float ping = ((float)received - (float)sent) / 60f;
 
-        GameLogic.Instance.PingText.text = $"{Mathf.Abs(Mathf.Round(ping))} ms";
+        GameLogic.Instance.PingText.text = $"{Mathf.Abs(Mathf.Round(ping * 100f) / 100f)} ms";
     }
 
     #endregion
