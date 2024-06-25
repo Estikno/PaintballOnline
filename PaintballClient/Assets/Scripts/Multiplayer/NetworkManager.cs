@@ -124,10 +124,10 @@ public class NetworkManager : MonoBehaviour
         }
 
         //ping
-        if (connected && ServerTick % 15 == 0)
+        if (connected && ServerTick % 30 == 0)
         {
             Message message = Message.Create(MessageSendMode.Unreliable, ClientToServerId.ping);
-            message.AddString(DateTime.UtcNow.ToString("O"));
+            message.AddUShort(ServerTick);
 
             Client.Send(message);
         }
@@ -215,12 +215,12 @@ public class NetworkManager : MonoBehaviour
     [MessageHandler((ushort)ServerToClientId.ping)]
     public static void Ping(Message message)
     {
-        DateTime sent = DateTime.Parse(message.GetString(), null, System.Globalization.DateTimeStyles.RoundtripKind);
-        DateTime received = DateTime.Parse(message.GetString(), null, System.Globalization.DateTimeStyles.RoundtripKind);
+        ushort sent = message.GetUShort();
+        ushort received = message.GetUShort();
 
-        TimeSpan result = received.Subtract(sent);
+        float ping = ((float)received - (float)sent) / 60f;
 
-        GameLogic.Instance.PingText.text = $"{Math.Abs(Math.Round(result.TotalMilliseconds))} ms";
+        GameLogic.Instance.PingText.text = $"{Mathf.Abs(Mathf.Round(ping))} ms";
     }
 
     #endregion

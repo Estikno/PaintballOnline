@@ -122,8 +122,8 @@ public class NetworkManager : MonoBehaviour
     public static void Ping(ushort fromClientId, Message message)
     {
         Message _message = Message.Create(MessageSendMode.Unreliable, ServerToClientId.ping);
-        _message.AddString(message.GetString());
-        _message.AddString(DateTime.UtcNow.ToString("O"));
+        _message.AddUShort(message.GetUShort());
+        _message.AddUShort(Instance.CurrentTick);
 
         Instance.Server.Send(_message, fromClientId);
     }
