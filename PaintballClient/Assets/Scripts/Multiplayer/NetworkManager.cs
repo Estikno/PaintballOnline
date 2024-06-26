@@ -1,51 +1,47 @@
 using Riptide;
-using Riptide.Transports.Tcp;
 using Riptide.Utils;
 using System;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using Riptide.Transports;
+using Riptide.Transports.Tcp;
 
-/// <summary>
-/// The id's of the messages send from the server to the client
-/// </summary>
 public enum ServerToClientId : ushort
 {
     sync = 1,
+    activeScene,
     playerSpawned,
     playerMovement,
-    weaponShoot,
-    reloadWeapon,
-    health,
-    respawn,
-    ping
+    playerHealthChanged,
+    playerActiveWeaponUpdated,
+    playerAmmoChanged,
+    playerDied,
+    playerRespawned,
+    projectileSpawned,
+    projectileMovement,
+    projectileCollided,
+    projectileHitmarker,
 }
 
-/// <summary>
-/// The id's of the messages send from the client to the server
-/// </summary>
 public enum ClientToServerId : ushort
 {
     name = 1,
     input,
+    switchActiveWeapon,
     primaryUse,
-    reloadWeapon,
-    ping,
+    reload,
 }
 
 public class NetworkManager : MonoBehaviour
 {
-    private static NetworkManager instance;
-    public static NetworkManager Instance
+    private static NetworkManager _singleton;
+    public static NetworkManager Singleton
     {
-        get => instance;
+        get => _singleton;
         private set
         {
-            if (instance == null)
-            {
-                instance = value;
-            }
-            else if (instance != null)
+            if (_singleton == null)
+                _singleton = value;
+            else if (_singleton != value)
             {
                 Debug.Log($"{nameof(NetworkManager)} instance already exists, destroying duplicate!");
                 Destroy(value);
@@ -54,13 +50,14 @@ public class NetworkManager : MonoBehaviour
     }
 
     public Client Client { get; private set; }
-    private ushort _servertick;
+
+    private ushort _serverTick;
     public ushort ServerTick
     {
-        get => _servertick;
+        get => _serverTick;
         private set
         {
-            _servertick = value;
+            _serverTick = value;
             InterpolationTick = (ushort)(value - TicksBetweenPositionUpdates);
         }
     }
@@ -76,60 +73,33 @@ public class NetworkManager : MonoBehaviour
         }
     }
 
-    //[SerializeField] private string ip;
     [SerializeField] private ushort port;
-
     [Space(10)]
-
-    [SerializeField] private ushort tickDivergeTolerance = 1;
-
-    //other
-    private string provisionalUsername;
-    private bool hasSentName = false;
-    private bool hasReceiveSync = false;
-    private bool connected = false;
+    [SerializeField] private ushort tickDivergenceTolerance = 1;
 
     private void Awake()
     {
-        Instance = this;
-        DontDestroyOnLoad(gameObject);
+        Singleton = this;
     }
 
     private void Start()
     {
         RiptideLogger.Initialize(Debug.Log, Debug.Log, Debug.LogWarning, Debug.LogError, false);
 
-        Client = new Client(); //for udp
-        //Client = new Client(new TcpClient()); //for tcp   
+        Client = new Client(); //udp
+        //Client = new Client(new TcpClient()); //tcp
 
         Client.Connected += DidConnect;
         Client.ConnectionFailed += FailedToConnect;
         Client.ClientDisconnected += PlayerLeft;
         Client.Disconnected += DidDisconnect;
 
-        ServerTick = 2;
+        ServerTick = TicksBetweenPositionUpdates;
     }
 
     private void FixedUpdate()
     {
         Client.Update();
-
-        if (SceneManager.GetActiveScene().name != "Menu" && !hasSentName)
-        {
-            Debug.Log("Sending name");
-            SendName();
-            hasSentName = true;
-        }
-
-        //ping
-        if (connected && ServerTick % 30 == 0)
-        {
-            Message message = Message.Create(MessageSendMode.Unreliable, ClientToServerId.ping);
-            message.AddUShort(ServerTick);
-
-            Client.Send(message);
-        }
-
         ServerTick++;
     }
 
@@ -138,88 +108,48 @@ public class NetworkManager : MonoBehaviour
         Client.Disconnect();
     }
 
-    public void Connect(string ip, string username)
+    public void Connect(string ip)
     {
-        provisionalUsername = username;
         Client.Connect($"{ip}:{port}");
     }
 
-    public void Disconnect()
+    private void DidConnect(object sender, EventArgs e)
     {
-        Client.Disconnect();
-        hasSentName = false;
-        connected = false;
-        hasReceiveSync = false;
-    }
-
-    public void DidConnect(object sender, EventArgs e)
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
-        connected = true;
+        UIManager.Singleton.SendName();
     }
 
     private void FailedToConnect(object sender, EventArgs e)
     {
-        ConnectUIManager.Instance.BackToMain();
+        UIManager.Singleton.BackToMain();
     }
 
     private void PlayerLeft(object sender, ClientDisconnectedEventArgs e)
     {
-        Destroy(Player.list[e.Id].transform.parent.gameObject);
+        if (Player.list.TryGetValue(e.Id, out Player player))
+            Destroy(player.gameObject);
     }
 
     private void DidDisconnect(object sender, EventArgs e)
     {
-        //ConnectUIManager.Instance.BackToMain();
-        SceneManager.LoadScene(0);
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-        hasSentName = false;
-        connected = false;
-        hasReceiveSync = false;
+        UIManager.Singleton.BackToMain();
+        foreach (Player player in Player.list.Values)
+            Destroy(player.gameObject);
+
+        GameLogic.Singleton.UnloadActiveScene();
     }
 
     private void SetTick(ushort serverTick)
     {
-        if(Mathf.Abs(ServerTick - serverTick) > tickDivergeTolerance)
+        if (Mathf.Abs(ServerTick - serverTick) > tickDivergenceTolerance)
         {
             Debug.Log($"Client tick: {ServerTick} -> {serverTick}");
             ServerTick = serverTick;
         }
     }
 
-    #region Messages
-
     [MessageHandler((ushort)ServerToClientId.sync)]
-    private static void Sync(Message message)
+    public static void Sync(Message message)
     {
-        Instance.SetTick(message.GetUShort());
-
-        if (!Instance.hasReceiveSync)
-        {
-            Instance.hasReceiveSync = true;
-            GameLogic.Instance.LoadingScreen.SetActive(false);
-        }
+        Singleton.SetTick(message.GetUShort());
     }
-
-    public void SendName()
-    {
-        Message message = Message.Create(MessageSendMode.Reliable, ClientToServerId.name);
-        message.AddString(provisionalUsername);
-
-        Client.Send(message);
-    }
-
-    [MessageHandler((ushort)ServerToClientId.ping)]
-    public static void Ping(Message message)
-    {
-        ushort sent = message.GetUShort();
-        ushort received = message.GetUShort();
-
-        float ping = ((float)received - (float)sent) / 40f;
-
-        GameLogic.Instance.PingText.text = $"{Mathf.Abs(Mathf.Round(ping * 100f) / 100f)} ms";
-    }
-
-    #endregion
 }

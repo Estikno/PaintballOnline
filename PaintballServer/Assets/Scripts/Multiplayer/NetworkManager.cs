@@ -1,49 +1,46 @@
-using UnityEngine;
-using Riptide.Utils;
 using Riptide;
+using Riptide.Utils;
+using UnityEngine;
+using Riptide.Transports;
 using Riptide.Transports.Tcp;
-using System;
 
-/// <summary>
-/// The id's of the messages send from the server to the client
-/// </summary>
 public enum ServerToClientId : ushort
 {
     sync = 1,
+    activeScene,
     playerSpawned,
     playerMovement,
-    weaponShoot,
-    reloadWeapon,
-    health,
-    respawn,
-    ping
+    playerHealthChanged,
+    playerActiveWeaponUpdated,
+    playerAmmoChanged,
+    playerDied,
+    playerRespawned,
+    projectileSpawned,
+    projectileMovement,
+    projectileCollided,
+    projectileHitmarker,
 }
 
-/// <summary>
-/// The id's of the messages send from the client to the server
-/// </summary>
 public enum ClientToServerId : ushort
 {
     name = 1,
     input,
+    switchActiveWeapon,
     primaryUse,
-    reloadWeapon,
-    ping,
+    reload,
 }
 
 public class NetworkManager : MonoBehaviour
 {
-    private static NetworkManager instance;
-    public static NetworkManager Instance
+    private static NetworkManager _singleton;
+    public static NetworkManager Singleton
     {
-        get => instance;
+        get => _singleton;
         private set
         {
-            if(instance == null)
-            {
-                instance = value;
-            }
-            else if(instance != null)
+            if (_singleton == null)
+                _singleton = value;
+            else if (_singleton != value)
             {
                 Debug.Log($"{nameof(NetworkManager)} instance already exists, destroying duplicate!");
                 Destroy(value);
@@ -51,9 +48,7 @@ public class NetworkManager : MonoBehaviour
         }
     }
 
-    public Server Server {  get; private set; }
-
-    //Every 27.3 minutes the currentTick needs to be reseted
+    public Server Server { get; private set; }
     public ushort CurrentTick { get; private set; } = 0;
 
     [SerializeField] private ushort port;
@@ -61,7 +56,7 @@ public class NetworkManager : MonoBehaviour
 
     private void Awake()
     {
-        Instance = this;
+        Singleton = this;
     }
 
     private void Start()
@@ -77,11 +72,15 @@ public class NetworkManager : MonoBehaviour
         RiptideLogger.Initialize(Debug.Log, true);
 #endif
 
-        Server = new Server(); //for udp
-        //Server = new Server(new TcpServer()); //for tcp
+        Server = new Server(); //udp
+        //Server = new Server(new TcpServer()); //tcp
+
+        Server.ClientConnected += NewPlayerConnected;
+        Server.ClientDisconnected += PlayerLeft;
 
         Server.Start(port, maxClientCount);
-        Server.ClientDisconnected += PlayerLeft;
+
+        GameLogic.Singleton.LoadScene(1);
     }
 
     private void FixedUpdate()
@@ -99,34 +98,22 @@ public class NetworkManager : MonoBehaviour
         Server.Stop();
     }
 
+    private void NewPlayerConnected(object sender, ServerConnectedEventArgs e)
+    {
+        GameLogic.Singleton.PlayerCountChanged(e.Client.Id);
+    }
+
     private void PlayerLeft(object sender, ServerDisconnectedEventArgs e)
     {
         if (Player.list.TryGetValue(e.Client.Id, out Player player))
-        {
-            player.WeaponManager.weapon.destroyItself();
-            Destroy(player.transform.parent.gameObject);
-        }
+            Destroy(player.gameObject);
     }
 
     private void SendSync()
     {
-        Message message = Message.Create(MessageSendMode.Unreliable, ServerToClientId.sync);
+        Message message = Message.Create(MessageSendMode.Unreliable, (ushort)ServerToClientId.sync);
         message.AddUShort(CurrentTick);
 
         Server.SendToAll(message);
     }
-
-    #region Messages
-
-    [MessageHandler((ushort)ClientToServerId.ping)]
-    public static void Ping(ushort fromClientId, Message message)
-    {
-        Message _message = Message.Create(MessageSendMode.Unreliable, ServerToClientId.ping);
-        _message.AddUShort(message.GetUShort());
-        _message.AddUShort(Instance.CurrentTick);
-
-        Instance.Server.Send(_message, fromClientId);
-    }
-
-    #endregion
 }

@@ -1,29 +1,18 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
-
-[Serializable]
-public struct NameWeapon
-{
-    public string Name;
-    public GameObject prefab;
-}
+using UnityEngine.SceneManagement;
 
 public class GameLogic : MonoBehaviour
 {
-    private static GameLogic instance;
-    public static GameLogic Instance
+    private static GameLogic _singleton;
+    public static GameLogic Singleton
     {
-        get => instance;
+        get => _singleton;
         private set
         {
-            if (instance == null)
-            {
-                instance = value;
-            }
-            else if (instance != null)
+            if (_singleton == null)
+                _singleton = value;
+            else if (_singleton != value)
             {
                 Debug.Log($"{nameof(GameLogic)} instance already exists, destroying duplicate!");
                 Destroy(value);
@@ -31,31 +20,49 @@ public class GameLogic : MonoBehaviour
         }
     }
 
-    public GameObject PlayerPrefab => playerPrefab;
     public GameObject LocalPlayerPrefab => localPlayerPrefab;
-    public NameWeapon[] Weapons => weapons;
-    public GameObject BulletImpactEffect => bulletImpactEffect;
-    public GameObject HitMarkerEffect => hitMarkerEffect;
-    public TMP_Text CurrentAmmoText => currentAmmoText;
-    public GameObject LoadingScreen => loadingScreen;
-    public TMP_Text PingText => pingText;
+    public GameObject PlayerPrefab => playerPrefab;
+    public GameObject BulletPrefab => bulletPrefab;
+    public GameObject TeleporterPrefab => teleporterPrefab;
+    public GameObject LaserPrefab => laserPrefab;
 
     [Header("Prefabs")]
-    [SerializeField] private GameObject playerPrefab;
     [SerializeField] private GameObject localPlayerPrefab;
-    [SerializeField] private NameWeapon[] weapons;
+    [SerializeField] private GameObject playerPrefab;
+    [SerializeField] private GameObject bulletPrefab;
+    [SerializeField] private GameObject teleporterPrefab;
+    [SerializeField] private GameObject laserPrefab;
 
-    [Header("Effects")]
-    [SerializeField] private GameObject bulletImpactEffect;
-    [SerializeField] private GameObject hitMarkerEffect;
-
-    [Header("UIs")]
-    [SerializeField] private TMP_Text currentAmmoText;
-    [SerializeField] private GameObject loadingScreen;
-    [SerializeField] private TMP_Text pingText;
+    private byte activeScene;
 
     private void Awake()
     {
-        Instance = this;
+        Singleton = this;
+    }
+
+    public void LoadScene(byte sceneBuildIndex)
+    {
+        StartCoroutine(LoadSceneInBackground(sceneBuildIndex));
+    }
+
+    public void UnloadActiveScene()
+    {
+        if (activeScene > 0)
+        {
+            SceneManager.UnloadSceneAsync(activeScene);
+            activeScene = 0;
+        }
+    }
+
+    private IEnumerator LoadSceneInBackground(byte sceneBuildIndex)
+    {
+        UnloadActiveScene();
+
+        activeScene = sceneBuildIndex;
+        AsyncOperation loadingScene = SceneManager.LoadSceneAsync(sceneBuildIndex, LoadSceneMode.Additive);
+        while (!loadingScene.isDone)
+            yield return new WaitForSeconds(0.25f);
+
+        SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(sceneBuildIndex));
     }
 }
