@@ -66,7 +66,7 @@ public class NetworkManager : MonoBehaviour
 
     private void Start()
     {
-        Application.targetFrameRate = 80;
+        Application.targetFrameRate = 60;
 
 #if UNITY_EDITOR
         RiptideLogger.Initialize(Debug.Log, Debug.Log, Debug.LogWarning, Debug.LogError, false);

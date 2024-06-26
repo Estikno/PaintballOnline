@@ -81,7 +81,7 @@ public class NetworkManager : MonoBehaviour
 
     [Space(10)]
 
-    [SerializeField] private ushort tickDivergeTolerance = 5;
+    [SerializeField] private ushort tickDivergeTolerance = 1;
 
     //other
     private string provisionalUsername;
@@ -97,8 +97,6 @@ public class NetworkManager : MonoBehaviour
 
     private void Start()
     {
-        Application.targetFrameRate = 120;
-
         RiptideLogger.Initialize(Debug.Log, Debug.Log, Debug.LogWarning, Debug.LogError, false);
 
         Client = new Client(); //for udp
@@ -218,7 +216,7 @@ public class NetworkManager : MonoBehaviour
         ushort sent = message.GetUShort();
         ushort received = message.GetUShort();
 
-        float ping = ((float)received - (float)sent) / 60f;
+        float ping = ((float)received - (float)sent) / 40f;
 
         GameLogic.Instance.PingText.text = $"{Mathf.Abs(Mathf.Round(ping * 100f) / 100f)} ms";
     }
