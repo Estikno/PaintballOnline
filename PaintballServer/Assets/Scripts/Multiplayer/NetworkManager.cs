@@ -72,8 +72,8 @@ public class NetworkManager : MonoBehaviour
         RiptideLogger.Initialize(Debug.Log, true);
 #endif
 
-        Server = new Server(); //udp
-        //Server = new Server(new TcpServer()); //tcp
+        //Server = new Server(); //udp
+        Server = new Server(new TcpServer()); //tcp
 
         Server.ClientConnected += NewPlayerConnected;
         Server.ClientDisconnected += PlayerLeft;

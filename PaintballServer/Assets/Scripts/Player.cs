@@ -175,7 +175,7 @@ public class Player : MonoBehaviour
     private static void PrimaryUse(ushort fromClientId, Message message)
     {
         if (list.TryGetValue(fromClientId, out Player player))
-            player.weaponManager.PrimaryUsePressed();
+            player.weaponManager.PrimaryUsePressed(message.GetString());
     }
 
     [MessageHandler((ushort)ClientToServerId.reload)]

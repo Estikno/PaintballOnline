@@ -31,11 +31,11 @@ public class Gun : MonoBehaviour
         maxTotalAmmo = totalAmmo;
     }
 
-    public void Shoot()
+    public void Shoot(string shoot_tick)
     {
         if (loadedAmmo > 0 && player.IsAlive)
         {
-            Projectile.Spawn(player, type, transform.position, transform.forward * shotSpeed * Time.fixedDeltaTime);
+            Projectile.Spawn(player, type, transform.position, transform.forward * shotSpeed * Time.fixedDeltaTime, shoot_tick);
             loadedAmmo--;
             SendAmmoUpdated();
         }

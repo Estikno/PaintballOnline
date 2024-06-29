@@ -45,12 +45,12 @@ public class WeaponManager : MonoBehaviour
         SendActiveWeaponUpdate(type);
     }
 
-    public void PrimaryUsePressed()
+    public void PrimaryUsePressed(string shoot_tick)
     {
         if (activeWeapon == null)
             return;
 
-        activeWeapon.Shoot();
+        activeWeapon.Shoot(shoot_tick);
     }
 
     public void Reload()

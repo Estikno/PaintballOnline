@@ -34,6 +34,9 @@ public class Player : MonoBehaviour
     private string username;
     private float health;
 
+    //rtt time when shooting
+    private List<string> rttShooting = new List<string>();
+
     private void OnValidate()
     {
         if (weaponManager == null)
@@ -125,6 +128,17 @@ public class Player : MonoBehaviour
         }
 
         list.Add(id, player);
+    }
+
+    public void UpdateShootRtt(string time_ms)
+    {
+        rttShooting.Add(time_ms);
+
+        if (rttShooting.Count > 10)
+        {
+            WriteFile.WriteShootLatencyData(rttShooting.ToArray());
+            rttShooting.Clear();
+        }
     }
 
     #region Messages

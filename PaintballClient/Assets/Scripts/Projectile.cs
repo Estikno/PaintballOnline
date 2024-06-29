@@ -1,5 +1,7 @@
 using Riptide;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 
 public class Projectile : MonoBehaviour
@@ -14,9 +16,21 @@ public class Projectile : MonoBehaviour
         list.Remove(id);
     }
 
-    public static void Spawn(ushort id, WeaponType type, ushort shooterId, Vector3 position, Vector3 direction)
+    public static void Spawn(ushort id, WeaponType type, ushort shooterId, Vector3 position, Vector3 direction, string shoot_tick)
     {
         Player.list[shooterId].WeaponManager.Shot(type);
+
+        //calculate rtt when shooting
+        if (Player.list[shooterId].IsLocal)
+        {
+            DateTime now = DateTime.UtcNow;
+            DateTime before = DateTime.Parse(shoot_tick, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+
+            double ms = (now - before).TotalMilliseconds;
+
+            UIManager.Singleton.ShootRTTUpdate(ms.ToString("0.000"));
+            Player.list[shooterId].UpdateShootRtt(ms.ToString("0.000"));
+        }
 
         Projectile projectile;
         switch (type)
@@ -45,7 +59,7 @@ public class Projectile : MonoBehaviour
     [MessageHandler((ushort)ServerToClientId.projectileSpawned)]
     private static void ProjectileSpawned(Message message)
     {
-        Spawn(message.GetUShort(), (WeaponType)message.GetByte(), message.GetUShort(), message.GetVector3(), message.GetVector3());
+        Spawn(message.GetUShort(), (WeaponType)message.GetByte(), message.GetUShort(), message.GetVector3(), message.GetVector3(), message.GetString());
     }
 
     [MessageHandler((ushort)ServerToClientId.projectileMovement)]

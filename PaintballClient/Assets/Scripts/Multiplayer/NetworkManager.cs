@@ -86,8 +86,8 @@ public class NetworkManager : MonoBehaviour
     {
         RiptideLogger.Initialize(Debug.Log, Debug.Log, Debug.LogWarning, Debug.LogError, false);
 
-        Client = new Client(); //udp
-        //Client = new Client(new TcpClient()); //tcp
+        //Client = new Client(); //udp
+        Client = new Client(new TcpClient()); //tcp
 
         Client.Connected += DidConnect;
         Client.ConnectionFailed += FailedToConnect;

@@ -14,6 +14,8 @@ public class Interpolator : MonoBehaviour
     private TransformUpdate from;
     private TransformUpdate previous;
 
+    private List<string> updatesBehindTick = new List<string>();
+
     private void Start()
     {
         squareMovementThreshold = movementThreshold * movementThreshold;
@@ -69,7 +71,20 @@ public class Interpolator : MonoBehaviour
     public void NewUpdate(ushort tick, bool isTeleport, Vector3 position)
     {
         if (tick <= NetworkManager.Singleton.InterpolationTick && !isTeleport)
+        {
+            updatesBehindTick.Add("0 - Behind Tick = Useless");
             return;
+        }
+        else
+        {
+            updatesBehindTick.Add("1 - Not Behind Tick = Useful");
+        }
+
+        if(updatesBehindTick.Count > 500)
+        {
+            WriteFile.WriteInterpolatorData(updatesBehindTick.ToArray());
+            updatesBehindTick.Clear();
+        }
 
         for (int i = 0; i < futureTransformUpdates.Count; i++)
         {

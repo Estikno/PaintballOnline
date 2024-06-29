@@ -94,7 +94,7 @@ public class Projectile : MonoBehaviour
         list.Remove(id);
     }
 
-    public static void Spawn(Player shooter, WeaponType type, Vector3 position, Vector3 initialVelocity)
+    public static void Spawn(Player shooter, WeaponType type, Vector3 position, Vector3 initialVelocity, string shoot_tick)
     {
         Projectile projectile;
         switch (type)
@@ -120,7 +120,7 @@ public class Projectile : MonoBehaviour
         projectile.type = type;
         projectile.velocity = initialVelocity;
 
-        projectile.SendSpawned();
+        projectile.SendSpawned(shoot_tick);
         list.Add(id, projectile);
     }
 
@@ -131,7 +131,7 @@ public class Projectile : MonoBehaviour
     }
 
     #region Messages
-    private void SendSpawned()
+    private void SendSpawned(string shoot_tick)
     {
         Message message = Message.Create(MessageSendMode.Reliable, ServerToClientId.projectileSpawned);
         message.AddUShort(id);
@@ -139,6 +139,7 @@ public class Projectile : MonoBehaviour
         message.AddUShort(shooter.Id);
         message.AddVector3(transform.position);
         message.AddVector3(transform.forward);
+        message.AddString(shoot_tick);
         NetworkManager.Singleton.Server.SendToAll(message);
     }
 

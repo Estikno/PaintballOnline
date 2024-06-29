@@ -34,6 +34,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Image hitmarker;
     [SerializeField] private AudioSource hitAudio;
     [SerializeField] private AudioSource hurtAudio;
+    [SerializeField] private Text ShootRTTText;
 
     private void Awake()
     {
@@ -142,5 +143,10 @@ public class UIManager : MonoBehaviour
         Message message = Message.Create(MessageSendMode.Reliable, ClientToServerId.name);
         message.AddString(usernameField.text);
         NetworkManager.Singleton.Client.Send(message);
+    }
+
+    public void ShootRTTUpdate(string ms)
+    {
+        ShootRTTText.text = $"{ms} ms";
     }
 }

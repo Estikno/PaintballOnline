@@ -1,4 +1,5 @@
 using Riptide;
+using System;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -78,7 +79,10 @@ public class PlayerController : MonoBehaviour
 
     private void SendPrimaryUse()
     {
-        NetworkManager.Singleton.Client.Send(Message.Create(MessageSendMode.Reliable, ClientToServerId.primaryUse));
+        Message message = Message.Create(MessageSendMode.Reliable, ClientToServerId.primaryUse);
+        message.AddString(DateTime.UtcNow.ToString("O"));
+
+        NetworkManager.Singleton.Client.Send(message);
     }
 
     private void SendReload()
