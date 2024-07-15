@@ -23,7 +23,7 @@
   <a href="https://github.com/Estikno/PaintballOnline/issues/">
     <img src="https://img.shields.io/github/issues/Estikno/PaintballOnline" alt="open issues" />
   </a>
-  <a href="https://github.com/Estikno/PaintballOnline/blob/master/LICENSE.md">
+  <a href="https://github.com/Estikno/PaintballOnline/blob/master/LICENSE">
     <img src="https://img.shields.io/github/license/Estikno/PaintballOnline" alt="license" />
   </a>
 </p>
