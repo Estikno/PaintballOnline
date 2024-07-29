@@ -2,7 +2,7 @@
   <h1>Paintball Online</h1>
   
   <p>
-    A simple and fast-paced online paintball game developed with Unity. Dive into the fun and competitive world of paintball from the comfort of your home!
+    A simple and fast-paced online paintball game developed with Unity.
   </p>
   
   
@@ -48,8 +48,7 @@
 <!-- About the Project -->
 ## :star2: About the Project
 
-Welcome to Paintball Online! This project is a simple and fast-paced multiplayer paintball game built using Unity. Join the action, team up with friends, and experience the thrill of paintball battles online.
-
+Welcome to Paintball Online! This project is a simple and fast-paced multiplayer paintball game built using Unity. It was developed for a school project and in order to learn about networking.
 
 <!-- Getting Started -->
 ## 	:toolbox: Getting Started
@@ -74,13 +73,13 @@ To get a local copy up and running, follow these simple steps:
 git clone https://github.com/Estikno/PaintballOnline.git
 cd PaintballOnline
 ```
-2. Open the project in Unity Hub.
+2. Open the 2 projects in Unity Hub.
 
 <!-- Run Locally -->
 :running: Run Locally
 
 Open the projects in Unity Editor via Unity Hub.
-Press the 'Play' button in the Unity Editor to start the game.
+Press the 'Play' button in the Unity Editor to start the game. One editor will be the server and the other one the client, this difference is specified in the names of the projects.
 <!-- Deployment -->
 :triangular_flag_on_post: Deployment
 To build the project for deployment:
