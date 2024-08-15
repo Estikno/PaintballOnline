@@ -32,19 +32,6 @@
 
 <br />
 
-<!-- Table of Contents -->
-# :notebook_with_decorative_cover: Table of Contents
-
-- [About the Project](#about-the-project)
-- [Getting Started](#getting-started)
-  * [Prerequisites](#prerequisites)
-  * [Installation](#installation)
-  * [Run Locally](#run-locally)
-  * [Deployment](#deployment)
-- [License](#license)
-
-  
-
 <!-- About the Project -->
 ## :star2: About the Project
 
