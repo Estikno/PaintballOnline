@@ -37,6 +37,8 @@
 
 Welcome to Paintball Online! This project is a simple and fast-paced multiplayer paintball game built using Unity. It was developed for a school project and in order to learn about networking.
 
+You can check the [releases](https://github.com/Estikno/PaintballOnline/releases/tag/v0.9) page if you want the server and client already compiled and ready to excecute.
+
 <!-- Getting Started -->
 ## 	:toolbox: Getting Started
 
